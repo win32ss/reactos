@@ -208,7 +208,7 @@
 @ stdcall NtAccessCheckByTypeResultList(ptr ptr ptr long ptr long ptr ptr long ptr ptr)
 @ stdcall NtAccessCheckByTypeResultListAndAuditAlarm(ptr ptr ptr ptr ptr ptr long long long ptr long ptr long ptr ptr ptr)
 @ stdcall NtAccessCheckByTypeResultListAndAuditAlarmByHandle(ptr ptr ptr ptr ptr ptr ptr long long long ptr long ptr long ptr ptr ptr)
-@ stub -version=0x600+ NtAcquireCMFViewOwnership
+@ stdcall -version=0x600+ NtAcquireCMFViewOwnership(ptr)
 @ stdcall NtAddAtom(ptr long ptr)
 @ stdcall NtAddBootEntry(ptr long)
 @ stdcall NtAddDriverEntry(ptr long) ; 5.2 and higher
@@ -220,42 +220,42 @@
 @ stdcall NtAllocateUserPhysicalPages(ptr ptr ptr)
 @ stdcall NtAllocateUuids(ptr ptr ptr ptr)
 @ stdcall NtAllocateVirtualMemory(long ptr ptr ptr long long)
-@ stub -version=0x600+ NtAlpcAcceptConnectPort
-@ stub -version=0x600+ NtAlpcCancelMessage
-@ stub -version=0x600+ NtAlpcConnectPort
-@ stub -version=0x600+ NtAlpcCreatePort
-@ stub -version=0x600+ NtAlpcCreatePortSection
-@ stub -version=0x600+ NtAlpcCreateResourceReserve
-@ stub -version=0x600+ NtAlpcCreateSectionView
-@ stub -version=0x600+ NtAlpcCreateSecurityContext
-@ stub -version=0x600+ NtAlpcDeletePortSection
-@ stub -version=0x600+ NtAlpcDeleteResourceReserve
-@ stub -version=0x600+ NtAlpcDeleteSectionView
-@ stub -version=0x600+ NtAlpcDeleteSecurityContext
-@ stub -version=0x600+ NtAlpcDisconnectPort
-@ stub -version=0x600+ NtAlpcImpersonateClientOfPort
-@ stub -version=0x600+ NtAlpcOpenSenderProcess
-@ stub -version=0x600+ NtAlpcOpenSenderThread
-@ stub -version=0x600+ NtAlpcQueryInformation
-@ stub -version=0x600+ NtAlpcQueryInformationMessage
-@ stub -version=0x600+ NtAlpcRevokeSecurityContext
-@ stub -version=0x600+ NtAlpcSendWaitReceivePort
-@ stub -version=0x600+ NtAlpcSetInformation
+@ stdcall -version=0x600+ NtAlpcAcceptConnectPort(ptr)
+@ stdcall -version=0x600+ NtAlpcCancelMessage(ptr)
+@ stdcall -version=0x600+ NtAlpcConnectPort(ptr)
+@ stdcall -version=0x600+ NtAlpcCreatePort(ptr)
+@ stdcall -version=0x600+ NtAlpcCreatePortSection(ptr)
+@ stdcall -version=0x600+ NtAlpcCreateResourceReserve(ptr)
+@ stdcall -version=0x600+ NtAlpcCreateSectionView(ptr)
+@ stdcall -version=0x600+ NtAlpcCreateSecurityContext(ptr)
+@ stdcall -version=0x600+ NtAlpcDeletePortSection(ptr)
+@ stdcall -version=0x600+ NtAlpcDeleteResourceReserve(ptr)
+@ stdcall -version=0x600+ NtAlpcDeleteSectionView(ptr)
+@ stdcall -version=0x600+ NtAlpcDeleteSecurityContext(ptr)
+@ stdcall -version=0x600+ NtAlpcDisconnectPort(ptr)
+@ stdcall -version=0x600+ NtAlpcImpersonateClientOfPort(ptr)
+@ stdcall -version=0x600+ NtAlpcOpenSenderProcess(ptr)
+@ stdcall -version=0x600+ NtAlpcOpenSenderThread(ptr)
+@ stdcall -version=0x600+ NtAlpcQueryInformation(ptr)
+@ stdcall -version=0x600+ NtAlpcQueryInformationMessage(ptr)
+@ stdcall -version=0x600+ NtAlpcRevokeSecurityContext(ptr)
+@ stdcall -version=0x600+ NtAlpcSendWaitReceivePort(ptr)
+@ stdcall -version=0x600+ NtAlpcSetInformation(ptr)
 @ stdcall NtApphelpCacheControl(long ptr)
 @ stdcall NtAreMappedFilesTheSame(ptr ptr)
 @ stdcall NtAssignProcessToJobObject(long long)
 @ stdcall NtCallbackReturn(ptr long long)
 @ stdcall NtCancelDeviceWakeupRequest(ptr)
 @ stdcall NtCancelIoFile(long ptr)
-@ stub -version=0x600+ NtCancelIoFileEx
-@ stub -version=0x600+ NtCancelSynchronousIoFile
+@ stdcall -version=0x600+ NtCancelIoFileEx(ptr)
+@ stdcall -version=0x600+ NtCancelSynchronousIoFile(ptr)
 @ stdcall NtCancelTimer(long ptr)
 @ stdcall NtClearEvent(long)
 @ stdcall NtClose(long)
 @ stdcall NtCloseObjectAuditAlarm(ptr ptr long)
-@ stub -version=0x600+ NtCommitComplete
-@ stub -version=0x600+ NtCommitEnlistment
-@ stub -version=0x600+ NtCommitTransaction
+@ stdcall -version=0x600+ NtCommitComplete(ptr)
+@ stdcall -version=0x600+ NtCommitEnlistment(ptr)
+@ stdcall -version=0x600+ NtCommitTransaction(ptr)
 @ stdcall NtCompactKeys(long ptr)
 @ stdcall NtCompareTokens(ptr ptr ptr)
 @ stdcall NtCompleteConnectPort(ptr)
@@ -264,7 +264,7 @@
 @ stdcall NtContinue(ptr long)
 @ stdcall NtCreateDebugObject(ptr long ptr long)
 @ stdcall NtCreateDirectoryObject(long long long)
-@ stub -version=0x600+ NtCreateEnlistment
+@ stdcall -version=0x600+ NtCreateEnlistment(ptr)
 @ stdcall NtCreateEvent(long long long long long)
 @ stdcall NtCreateEventPair(ptr long ptr)
 @ stdcall NtCreateFile(ptr long ptr ptr long long long ptr long long ptr)
@@ -272,30 +272,30 @@
 @ stdcall NtCreateJobObject(ptr long ptr)
 @ stdcall NtCreateJobSet(long ptr long)
 @ stdcall NtCreateKey(ptr long ptr long ptr long long)
-@ stub -version=0x600+ NtCreateKeyTransacted
+@ stdcall -version=0x600+ NtCreateKeyTransacted(ptr)
 @ stdcall NtCreateKeyedEvent(ptr long ptr long)
 @ stdcall NtCreateMailslotFile(long long long long long long long long)
 @ stdcall NtCreateMutant(ptr long ptr long)
 @ stdcall NtCreateNamedPipeFile(ptr long ptr ptr long long long long long long long long long ptr)
 @ stdcall NtCreatePagingFile(ptr ptr ptr long)
 @ stdcall NtCreatePort(ptr ptr long long ptr)
-@ stub -version=0x600+ NtCreatePrivateNamespace
+@ stdcall -version=0x600+ NtCreatePrivateNamespace(ptr)
 @ stdcall NtCreateProcess(ptr long ptr ptr long ptr ptr ptr)
 @ stdcall NtCreateProcessEx(ptr long ptr ptr long ptr ptr ptr long)
 @ stdcall NtCreateProfile(ptr ptr ptr long long ptr long long long) ; CHECKME
-@ stub -version=0x600+ NtCreateResourceManager
+@ stdcall -version=0x600+ NtCreateResourceManager(ptr)
 @ stdcall NtCreateSection(ptr long ptr ptr long long ptr)
 @ stdcall NtCreateSemaphore(ptr long ptr long long)
 @ stdcall NtCreateSymbolicLinkObject(ptr long ptr ptr)
 @ stdcall NtCreateThread(ptr long ptr ptr ptr ptr ptr long)
-@ stub -version=0x600+ NtCreateThreadEx
+@ stdcall -version=0x600+ NtCreateThreadEx(ptr)
 @ stdcall NtCreateTimer(ptr long ptr long)
 @ stdcall NtCreateToken(ptr long ptr long ptr ptr ptr ptr ptr ptr ptr ptr ptr)
-@ stub -version=0x600+ NtCreateTransaction
-@ stub -version=0x600+ NtCreateTransactionManager
-@ stub -version=0x600+ NtCreateUserProcess
+@ stdcall -version=0x600+ NtCreateTransaction(ptr)
+@ stdcall -version=0x600+ NtCreateTransactionManager(ptr)
+@ stdcall -version=0x600+ NtCreateUserProcess(ptr)
 @ stdcall NtCreateWaitablePort(ptr ptr long long long)
-@ stub -version=0x600+ NtCreateWorkerFactory
+@ stdcall -version=0x600+ NtCreateWorkerFactory(ptr)
 @ stdcall -arch=win32 NtCurrentTeb() _NtCurrentTeb
 @ stdcall NtDebugActiveProcess(ptr ptr)
 @ stdcall NtDebugContinue(ptr ptr long)
@@ -306,7 +306,7 @@
 @ stdcall NtDeleteFile(ptr)
 @ stdcall NtDeleteKey(long)
 @ stdcall NtDeleteObjectAuditAlarm(ptr ptr long)
-@ stub -version=0x600+ NtDeletePrivateNamespace
+@ stdcall -version=0x600+ NtDeletePrivateNamespace(ptr)
 @ stdcall NtDeleteValueKey(long ptr)
 @ stdcall NtDeviceIoControlFile(long long long long long long long long long long)
 @ stdcall NtDisplayString(ptr)
@@ -316,43 +316,43 @@
 @ stdcall NtEnumerateDriverEntries(ptr ptr)
 @ stdcall NtEnumerateKey (long long long long long long)
 @ stdcall NtEnumerateSystemEnvironmentValuesEx(long ptr long)
-@ stub -version=0x600+ NtEnumerateTransactionObject
+@ stdcall -version=0x600+ NtEnumerateTransactionObject(ptr)
 @ stdcall NtEnumerateValueKey(long long long long long long)
 @ stdcall NtExtendSection(ptr ptr)
 @ stdcall NtFilterToken(ptr long ptr ptr ptr ptr)
 @ stdcall NtFindAtom(ptr long ptr)
 @ stdcall NtFlushBuffersFile(long ptr)
-@ stub -version=0x600+ NtFlushInstallUILanguage
+@ stdcall -version=0x600+ NtFlushInstallUILanguage(ptr)
 @ stdcall NtFlushInstructionCache(long ptr long)
 @ stdcall NtFlushKey(long)
-@ stub -version=0x600+ NtFlushProcessWriteBuffers
+@ stdcall -version=0x600+ NtFlushProcessWriteBuffers(ptr)
 @ stdcall NtFlushVirtualMemory(long ptr ptr long)
 @ stdcall NtFlushWriteBuffer()
 @ stdcall NtFreeUserPhysicalPages(ptr ptr ptr)
 @ stdcall NtFreeVirtualMemory(long ptr ptr long)
-@ stub -version=0x600+ NtFreezeRegistry
-@ stub -version=0x600+ NtFreezeTransactions
+@ stdcall -version=0x600+ NtFreezeRegistry(ptr)
+@ stdcall -version=0x600+ NtFreezeTransactions(ptr)
 @ stdcall NtFsControlFile(long long long long long long long long long long)
 @ stdcall NtGetContextThread(long ptr)
 @ stdcall NtGetCurrentProcessorNumber() ; 5.2 and higher
 @ stdcall NtGetDevicePowerState(ptr ptr)
-@ stub -version=0x600+ NtGetMUIRegistryInfo
-@ stub -version=0x600+ NtGetNextProcess
-@ stub -version=0x600+ NtGetNextThread
-@ stub -version=0x600+ NtGetNlsSectionPtr
-@ stub -version=0x600+ NtGetNotificationResourceManager
+@ stdcall -version=0x600+ NtGetMUIRegistryInfo(ptr)
+@ stdcall -version=0x600+ NtGetNextProcess(ptr)
+@ stdcall -version=0x600+ NtGetNextThread(ptr)
+@ stdcall -version=0x600+ NtGetNlsSectionPtr(ptr)
+@ stdcall -version=0x600+ NtGetNotificationResourceManager(ptr)
 @ stdcall NtGetPlugPlayEvent(long long ptr long)
 @ stdcall NtGetTickCount() RtlGetTickCount
 @ stdcall NtGetWriteWatch(long long ptr long ptr ptr ptr)
 @ stdcall NtImpersonateAnonymousToken(ptr)
 @ stdcall NtImpersonateClientOfPort(ptr ptr)
 @ stdcall NtImpersonateThread(ptr ptr ptr)
-@ stub -version=0x600+ NtInitializeNlsFiles
+@ stdcall -version=0x600+ NtInitializeNlsFiles(ptr)
 @ stdcall NtInitializeRegistry(long)
 @ stdcall NtInitiatePowerAction (long long long long)
 @ stdcall NtIsProcessInJob(long long)
 @ stdcall NtIsSystemResumeAutomatic()
-@ stub -version=0x600+ NtIsUILanguageComitted
+@ stdcall -version=0x600+ NtIsUILanguageComitted(ptr)
 @ stdcall NtListenPort(ptr ptr)
 @ stdcall NtLoadDriver(ptr)
 @ stdcall NtLoadKey2(ptr ptr long)
@@ -364,7 +364,7 @@
 @ stdcall NtLockVirtualMemory(long ptr ptr long)
 @ stdcall NtMakePermanentObject(ptr)
 @ stdcall NtMakeTemporaryObject(long)
-@ stub -version=0x600+ NtMapCMFModule
+@ stdcall -version=0x600+ NtMapCMFModule(ptr)
 @ stdcall NtMapUserPhysicalPages(ptr ptr ptr)
 @ stdcall NtMapUserPhysicalPagesScatter(ptr ptr ptr)
 @ stdcall NtMapViewOfSection(long long ptr long long ptr ptr long long long)
@@ -374,43 +374,43 @@
 @ stdcall NtNotifyChangeKey(long long ptr ptr ptr long long ptr long long)
 @ stdcall NtNotifyChangeMultipleKeys(ptr long ptr ptr ptr ptr ptr long long ptr long long)
 @ stdcall NtOpenDirectoryObject(long long long)
-@ stub -version=0x600+ NtOpenEnlistment
+@ stdcall -version=0x600+ NtOpenEnlistment(ptr)
 @ stdcall NtOpenEvent(long long long)
 @ stdcall NtOpenEventPair(ptr long ptr)
 @ stdcall NtOpenFile(ptr long ptr ptr long long)
 @ stdcall NtOpenIoCompletion(ptr long ptr)
 @ stdcall NtOpenJobObject(ptr long ptr)
 @ stdcall NtOpenKey(ptr long ptr)
-@ stub -version=0x600+ NtOpenKeyTransacted
+@ stdcall -version=0x600+ NtOpenKeyTransacted(ptr)
 @ stdcall NtOpenKeyedEvent(ptr long ptr)
 @ stdcall NtOpenMutant(ptr long ptr)
 @ stdcall NtOpenObjectAuditAlarm(ptr ptr ptr ptr ptr ptr long long ptr long long ptr)
-@ stub -version=0x600+ NtOpenPrivateNamespace
+@ stdcall -version=0x600+ NtOpenPrivateNamespace(ptr)
 @ stdcall NtOpenProcess(ptr long ptr ptr)
 @ stdcall NtOpenProcessToken(long long ptr)
 @ stdcall NtOpenProcessTokenEx(long long long ptr)
-@ stub -version=0x600+ NtOpenResourceManager
+@ stdcall -version=0x600+ NtOpenResourceManager(ptr)
 @ stdcall NtOpenSection(ptr long ptr)
 @ stdcall NtOpenSemaphore(long long ptr)
-@ stub -version=0x600+ NtOpenSession
+@ stdcall -version=0x600+ NtOpenSession(ptr)
 @ stdcall NtOpenSymbolicLinkObject (ptr long ptr)
 @ stdcall NtOpenThread(ptr long ptr ptr)
 @ stdcall NtOpenThreadToken(long long long ptr)
 @ stdcall NtOpenThreadTokenEx(long long long long ptr)
 @ stdcall NtOpenTimer(ptr long ptr)
-@ stub -version=0x600+ NtOpenTransaction
-@ stub -version=0x600+ NtOpenTransactionManager
+@ stdcall -version=0x600+ NtOpenTransaction(ptr)
+@ stdcall -version=0x600+ NtOpenTransactionManager(ptr)
 @ stdcall NtPlugPlayControl(ptr ptr long)
 @ stdcall NtPowerInformation(long ptr long ptr long)
-@ stub -version=0x600+ NtPrePrepareComplete
-@ stub -version=0x600+ NtPrePrepareEnlistment
-@ stub -version=0x600+ NtPrepareComplete
-@ stub -version=0x600+ NtPrepareEnlistment
+@ stdcall -version=0x600+ NtPrePrepareComplete(ptr)
+@ stdcall -version=0x600+ NtPrePrepareEnlistment(ptr)
+@ stdcall -version=0x600+ NtPrepareComplete(ptr)
+@ stdcall -version=0x600+ NtPrepareEnlistment(ptr)
 @ stdcall NtPrivilegeCheck(ptr ptr ptr)
 @ stdcall NtPrivilegeObjectAuditAlarm(ptr ptr ptr long ptr long)
 @ stdcall NtPrivilegedServiceAuditAlarm(ptr ptr ptr ptr long)
-@ stub -version=0x600+ NtPropagationComplete
-@ stub -version=0x600+ NtPropagationFailed
+@ stdcall -version=0x600+ NtPropagationComplete(ptr)
+@ stdcall -version=0x600+ NtPropagationFailed(ptr)
 @ stdcall NtProtectVirtualMemory(long ptr ptr long ptr)
 @ stdcall NtPulseEvent(long ptr)
 @ stdcall NtQueryAttributesFile(ptr ptr)
@@ -426,22 +426,22 @@
 @ stdcall NtQueryEvent(long long ptr long ptr)
 @ stdcall NtQueryFullAttributesFile(ptr ptr)
 @ stdcall NtQueryInformationAtom(long long ptr long ptr)
-@ stub -version=0x600+ NtQueryInformationEnlistment
+@ stdcall -version=0x600+ NtQueryInformationEnlistment(ptr)
 @ stdcall NtQueryInformationFile(ptr ptr ptr long long)
 @ stdcall NtQueryInformationJobObject(ptr long ptr long ptr)
 @ stdcall NtQueryInformationPort(ptr long ptr long ptr)
 @ stdcall NtQueryInformationProcess(ptr long ptr long ptr)
-@ stub -version=0x600+ NtQueryInformationResourceManager
+@ stdcall -version=0x600+ NtQueryInformationResourceManager(ptr)
 @ stdcall NtQueryInformationThread(ptr long ptr long ptr)
 @ stdcall NtQueryInformationToken(ptr long ptr long ptr)
-@ stub -version=0x600+ NtQueryInformationTransaction
-@ stub -version=0x600+ NtQueryInformationTransactionManager
-@ stub -version=0x600+ NtQueryInformationWorkerFactory
+@ stdcall -version=0x600+ NtQueryInformationTransaction(ptr)
+@ stdcall -version=0x600+ NtQueryInformationTransactionManager(ptr)
+@ stdcall -version=0x600+ NtQueryInformationWorkerFactory(ptr)
 @ stdcall NtQueryInstallUILanguage(ptr)
 @ stdcall NtQueryIntervalProfile(long ptr)
 @ stdcall NtQueryIoCompletion(long long ptr long ptr)
 @ stdcall NtQueryKey (long long ptr long ptr)
-@ stub -version=0x600+ NtQueryLicenseValue
+@ stdcall -version=0x600+ NtQueryLicenseValue(ptr)
 @ stdcall NtQueryMultipleValueKey(long ptr long ptr long ptr)
 @ stdcall NtQueryMutant(long long ptr long ptr)
 @ stdcall NtQueryObject(long long long long long)
@@ -468,26 +468,26 @@
 @ stdcall NtRaiseHardError(long long long ptr long ptr)
 @ stdcall NtReadFile(long long ptr ptr ptr ptr long ptr ptr)
 @ stdcall NtReadFileScatter(long long ptr ptr ptr ptr long ptr ptr)
-@ stub -version=0x600+ NtReadOnlyEnlistment
+@ stdcall -version=0x600+ NtReadOnlyEnlistment(ptr)
 @ stdcall NtReadRequestData(ptr ptr long ptr long ptr)
 @ stdcall NtReadVirtualMemory(long ptr ptr long ptr)
-@ stub -version=0x600+ NtRecoverEnlistment
-@ stub -version=0x600+ NtRecoverResourceManager
-@ stub -version=0x600+ NtRecoverTransactionManager
-@ stub -version=0x600+ NtRegisterProtocolAddressInformation
+@ stdcall -version=0x600+ NtRecoverEnlistment(ptr)
+@ stdcall -version=0x600+ NtRecoverResourceManager(ptr)
+@ stdcall -version=0x600+ NtRecoverTransactionManager(ptr)
+@ stdcall -version=0x600+ NtRegisterProtocolAddressInformation(ptr)
 @ stdcall NtRegisterThreadTerminatePort(ptr)
-@ stub -version=0x600+ NtReleaseCMFViewOwnership
+@ stdcall -version=0x600+ NtReleaseCMFViewOwnership(ptr)
 @ stdcall NtReleaseKeyedEvent(ptr ptr long ptr)
 @ stdcall NtReleaseMutant(long ptr)
 @ stdcall NtReleaseSemaphore(long long ptr)
-@ stub -version=0x600+ NtReleaseWorkerFactoryWorker
+@ stdcall -version=0x600+ NtReleaseWorkerFactoryWorker(ptr)
 @ stdcall NtRemoveIoCompletion(ptr ptr ptr ptr ptr)
-@ stub -version=0x600+ NtRemoveIoCompletionEx
+@ stdcall -version=0x600+ NtRemoveIoCompletionEx(ptr)
 @ stdcall NtRemoveProcessDebug(ptr ptr)
 @ stdcall NtRenameKey(ptr ptr)
-@ stub -version=0x600+ NtRenameTransactionManager
+@ stdcall -version=0x600+ NtRenameTransactionManager(ptr)
 @ stdcall NtReplaceKey(ptr long ptr)
-@ stub -version=0x600+ NtReplacePartitionUnit
+@ stdcall -version=0x600+ NtReplacePartitionUnit(ptr)
 @ stdcall NtReplyPort(ptr ptr)
 @ stdcall NtReplyWaitReceivePort(ptr ptr ptr ptr)
 @ stdcall NtReplyWaitReceivePortEx(ptr ptr ptr ptr ptr)
@@ -501,10 +501,10 @@
 @ stdcall NtRestoreKey(long long long)
 @ stdcall NtResumeProcess(ptr)
 @ stdcall NtResumeThread(long long)
-@ stub -version=0x600+ NtRollbackComplete
-@ stub -version=0x600+ NtRollbackEnlistment
-@ stub -version=0x600+ NtRollbackTransaction
-@ stub -version=0x600+ NtRollforwardTransactionManager
+@ stdcall -version=0x600+ NtRollbackComplete(ptr)
+@ stdcall -version=0x600+ NtRollbackEnlistment(ptr)
+@ stdcall -version=0x600+ NtRollbackTransaction(ptr)
+@ stdcall -version=0x600+ NtRollforwardTransactionManager(ptr)
 @ stdcall NtSaveKey(long long)
 @ stdcall NtSaveKeyEx(ptr ptr long)
 @ stdcall NtSaveMergedKeys(ptr ptr ptr)
@@ -523,18 +523,18 @@
 @ stdcall NtSetHighEventPair(ptr)
 @ stdcall NtSetHighWaitLowEventPair(ptr)
 @ stdcall NtSetInformationDebugObject(ptr long ptr long ptr)
-@ stub -version=0x600+ NtSetInformationEnlistment
+@ stdcall -version=0x600+ NtSetInformationEnlistment(ptr)
 @ stdcall NtSetInformationFile(ptr ptr ptr long long)
 @ stdcall NtSetInformationJobObject(ptr long ptr long)
 @ stdcall NtSetInformationKey(ptr long ptr long)
 @ stdcall NtSetInformationObject(ptr long ptr long)
 @ stdcall NtSetInformationProcess(ptr long ptr long)
-@ stub -version=0x600+ NtSetInformationResourceManager
+@ stdcall -version=0x600+ NtSetInformationResourceManager(ptr)
 @ stdcall NtSetInformationThread(ptr long ptr long)
 @ stdcall NtSetInformationToken(ptr long ptr long)
-@ stub -version=0x600+ NtSetInformationTransaction
-@ stub -version=0x600+ NtSetInformationTransactionManager
-@ stub -version=0x600+ NtSetInformationWorkerFactory
+@ stdcall -version=0x600+ NtSetInformationTransaction(ptr)
+@ stdcall -version=0x600+ NtSetInformationTransactionManager(ptr)
+@ stdcall -version=0x600+ NtSetInformationWorkerFactory(ptr)
 @ stdcall NtSetIntervalProfile(long long)
 @ stdcall NtSetIoCompletion(ptr long ptr long long)
 @ stdcall NtSetLdtEntries(long int64 long int64)
@@ -554,9 +554,9 @@
 @ stdcall NtSetValueKey(long long long long long long)
 @ stdcall NtSetVolumeInformationFile(long ptr ptr long long)
 @ stdcall NtShutdownSystem(long)
-@ stub -version=0x600+ NtShutdownWorkerFactory
+@ stdcall -version=0x600+ NtShutdownWorkerFactory(ptr)
 @ stdcall NtSignalAndWaitForSingleObject(long long long ptr)
-@ stub -version=0x600+ NtSinglePhaseReject
+@ stdcall -version=0x600+ NtSinglePhaseReject(ptr)
 @ stdcall NtStartProfile(ptr)
 @ stdcall NtStopProfile(ptr)
 @ stdcall NtSuspendProcess(ptr)
@@ -566,9 +566,9 @@
 @ stdcall NtTerminateProcess(ptr long)
 @ stdcall NtTerminateThread(ptr long)
 @ stdcall NtTestAlert()
-@ stub -version=0x600+ NtThawRegistry
-@ stub -version=0x600+ NtThawTransactions
-@ stub -version=0x600+ NtTraceControl
+@ stdcall -version=0x600+ NtThawRegistry(ptr)
+@ stdcall -version=0x600+ NtThawTransactions(ptr)
+@ stdcall -version=0x600+ NtTraceControl(ptr)
 @ stdcall NtTraceEvent(long long long ptr)
 @ stdcall NtTranslateFilePath(ptr long ptr long)
 @ stdcall NtUnloadDriver(ptr)
@@ -584,10 +584,10 @@
 @ stdcall NtWaitForMultipleObjects32(long ptr long long ptr)
 @ stdcall NtWaitForMultipleObjects(long ptr long long ptr)
 @ stdcall NtWaitForSingleObject(long long long)
-@ stub -version=0x600+ NtWaitForWorkViaWorkerFactory
+@ stdcall -version=0x600+ NtWaitForWorkViaWorkerFactory(ptr)
 @ stdcall NtWaitHighEventPair(ptr)
 @ stdcall NtWaitLowEventPair(ptr)
-@ stub -version=0x600+ NtWorkerFactoryWorkerReady
+@ stdcall -version=0x600+ NtWorkerFactoryWorkerReady(ptr)
 @ stdcall NtWriteFile(long long ptr ptr ptr ptr long ptr ptr)
 @ stdcall NtWriteFileGather(long long ptr ptr ptr ptr long ptr ptr)
 @ stdcall NtWriteRequestData(ptr ptr long ptr long ptr)
@@ -1371,7 +1371,7 @@
 @ stdcall ZwAccessCheckByTypeResultList(ptr ptr ptr long ptr long ptr ptr long ptr ptr)
 @ stdcall ZwAccessCheckByTypeResultListAndAuditAlarm(ptr ptr ptr ptr ptr ptr long long long ptr long ptr long ptr ptr ptr)
 @ stdcall ZwAccessCheckByTypeResultListAndAuditAlarmByHandle(ptr ptr ptr ptr ptr ptr ptr long long long ptr long ptr long ptr ptr ptr)
-@ stub -version=0x600+ ZwAcquireCMFViewOwnership
+@ stdcall -version=0x600+ ZwAcquireCMFViewOwnership(ptr)
 @ stdcall ZwAddAtom(ptr long ptr)
 @ stdcall ZwAddBootEntry(ptr long)
 @ stdcall ZwAddDriverEntry(ptr long)
@@ -1383,42 +1383,42 @@
 @ stdcall ZwAllocateUserPhysicalPages(ptr ptr ptr)
 @ stdcall ZwAllocateUuids(ptr ptr ptr ptr)
 @ stdcall ZwAllocateVirtualMemory(long ptr ptr ptr long long)
-@ stub -version=0x600+ ZwAlpcAcceptConnectPort
-@ stub -version=0x600+ ZwAlpcCancelMessage
-@ stub -version=0x600+ ZwAlpcConnectPort
-@ stub -version=0x600+ ZwAlpcCreatePort
-@ stub -version=0x600+ ZwAlpcCreatePortSection
-@ stub -version=0x600+ ZwAlpcCreateResourceReserve
-@ stub -version=0x600+ ZwAlpcCreateSectionView
-@ stub -version=0x600+ ZwAlpcCreateSecurityContext
-@ stub -version=0x600+ ZwAlpcDeletePortSection
-@ stub -version=0x600+ ZwAlpcDeleteResourceReserve
-@ stub -version=0x600+ ZwAlpcDeleteSectionView
-@ stub -version=0x600+ ZwAlpcDeleteSecurityContext
-@ stub -version=0x600+ ZwAlpcDisconnectPort
-@ stub -version=0x600+ ZwAlpcImpersonateClientOfPort
-@ stub -version=0x600+ ZwAlpcOpenSenderProcess
-@ stub -version=0x600+ ZwAlpcOpenSenderThread
-@ stub -version=0x600+ ZwAlpcQueryInformation
-@ stub -version=0x600+ ZwAlpcQueryInformationMessage
-@ stub -version=0x600+ ZwAlpcRevokeSecurityContext
-@ stub -version=0x600+ ZwAlpcSendWaitReceivePort
-@ stub -version=0x600+ ZwAlpcSetInformation
+@ stdcall -version=0x600+ ZwAlpcAcceptConnectPort(ptr)
+@ stdcall -version=0x600+ ZwAlpcCancelMessage(ptr)
+@ stdcall -version=0x600+ ZwAlpcConnectPort(ptr)
+@ stdcall -version=0x600+ ZwAlpcCreatePort(ptr)
+@ stdcall -version=0x600+ ZwAlpcCreatePortSection(ptr)
+@ stdcall -version=0x600+ ZwAlpcCreateResourceReserve(ptr)
+@ stdcall -version=0x600+ ZwAlpcCreateSectionView(ptr)
+@ stdcall -version=0x600+ ZwAlpcCreateSecurityContext(ptr)
+@ stdcall -version=0x600+ ZwAlpcDeletePortSection(ptr)
+@ stdcall -version=0x600+ ZwAlpcDeleteResourceReserve(ptr)
+@ stdcall -version=0x600+ ZwAlpcDeleteSectionView(ptr)
+@ stdcall -version=0x600+ ZwAlpcDeleteSecurityContext(ptr)
+@ stdcall -version=0x600+ ZwAlpcDisconnectPort(ptr)
+@ stdcall -version=0x600+ ZwAlpcImpersonateClientOfPort(ptr)
+@ stdcall -version=0x600+ ZwAlpcOpenSenderProcess(ptr)
+@ stdcall -version=0x600+ ZwAlpcOpenSenderThread(ptr)
+@ stdcall -version=0x600+ ZwAlpcQueryInformation(ptr)
+@ stdcall -version=0x600+ ZwAlpcQueryInformationMessage(ptr)
+@ stdcall -version=0x600+ ZwAlpcRevokeSecurityContext(ptr)
+@ stdcall -version=0x600+ ZwAlpcSendWaitReceivePort(ptr)
+@ stdcall -version=0x600+ ZwAlpcSetInformation(ptr)
 @ stdcall ZwApphelpCacheControl(long ptr)
 @ stdcall ZwAreMappedFilesTheSame(ptr ptr)
 @ stdcall ZwAssignProcessToJobObject(long long)
 @ stdcall ZwCallbackReturn(ptr long long)
 @ stdcall ZwCancelDeviceWakeupRequest(ptr)
 @ stdcall ZwCancelIoFile(long ptr)
-@ stub -version=0x600+ ZwCancelIoFileEx
-@ stub -version=0x600+ ZwCancelSynchronousIoFile
+@ stdcall -version=0x600+ ZwCancelIoFileEx(ptr)
+@ stdcall -version=0x600+ ZwCancelSynchronousIoFile(ptr)
 @ stdcall ZwCancelTimer(long ptr)
 @ stdcall ZwClearEvent(long)
 @ stdcall ZwClose(long)
 @ stdcall ZwCloseObjectAuditAlarm(ptr ptr long)
-@ stub -version=0x600+ ZwCommitComplete
-@ stub -version=0x600+ ZwCommitEnlistment
-@ stub -version=0x600+ ZwCommitTransaction
+@ stdcall -version=0x600+ ZwCommitComplete(ptr)
+@ stdcall -version=0x600+ ZwCommitEnlistment(ptr)
+@ stdcall -version=0x600+ ZwCommitTransaction(ptr)
 @ stdcall ZwCompactKeys(long ptr)
 @ stdcall ZwCompareTokens(ptr ptr ptr)
 @ stdcall ZwCompleteConnectPort(ptr)
@@ -1427,7 +1427,7 @@
 @ stdcall ZwContinue(ptr long)
 @ stdcall ZwCreateDebugObject(ptr long ptr long)
 @ stdcall ZwCreateDirectoryObject(long long long)
-@ stub -version=0x600+ ZwCreateEnlistment
+@ stdcall -version=0x600+ ZwCreateEnlistment(ptr)
 @ stdcall ZwCreateEvent(long long long long long)
 @ stdcall ZwCreateEventPair(ptr long ptr)
 @ stdcall ZwCreateFile(ptr long ptr ptr long long long ptr long long ptr)
@@ -1435,7 +1435,7 @@
 @ stdcall ZwCreateJobObject(ptr long ptr)
 @ stdcall ZwCreateJobSet(long ptr long)
 @ stdcall ZwCreateKey(ptr long ptr long ptr long long)
-@ stub -version=0x600+ ZwCreateKeyTransacted
+@ stdcall -version=0x600+ ZwCreateKeyTransacted(ptr)
 @ stdcall ZwCreateKeyedEvent(ptr long ptr long)
 @ stdcall ZwCreateMailslotFile(long long long long long long long long)
 @ stdcall ZwCreateMutant(ptr long ptr long)
@@ -1445,19 +1445,19 @@
 @ stdcall ZwCreateProcess(ptr long ptr ptr long ptr ptr ptr)
 @ stdcall ZwCreateProcessEx(ptr long ptr ptr long ptr ptr ptr long)
 @ stdcall ZwCreateProfile(ptr ptr ptr long long ptr long long long) ; CHECKME
-@ stub -version=0x600+ ZwCreateResourceManager
+@ stdcall -version=0x600+ ZwCreateResourceManager(ptr)
 @ stdcall ZwCreateSection(ptr long ptr ptr long long long)
 @ stdcall ZwCreateSemaphore(ptr long ptr long long)
 @ stdcall ZwCreateSymbolicLinkObject(ptr long ptr ptr)
 @ stdcall ZwCreateThread(ptr long ptr ptr ptr ptr ptr long)
-@ stub -version=0x600+ ZwCreateThreadEx
+@ stdcall -version=0x600+ ZwCreateThreadEx(ptr)
 @ stdcall ZwCreateTimer(ptr long ptr long)
 @ stdcall ZwCreateToken(ptr long ptr long ptr ptr ptr ptr ptr ptr ptr ptr ptr)
-@ stub -version=0x600+ ZwCreateTransaction
-@ stub -version=0x600+ ZwCreateTransactionManager
-@ stub -version=0x600+ ZwCreateUserProcess
+@ stdcall -version=0x600+ ZwCreateTransaction(ptr)
+@ stdcall -version=0x600+ ZwCreateTransactionManager(ptr)
+@ stdcall -version=0x600+ ZwCreateUserProcess(ptr)
 @ stdcall ZwCreateWaitablePort(ptr ptr long long long)
-@ stub -version=0x600+ ZwCreateWorkerFactory
+@ stdcall -version=0x600+ ZwCreateWorkerFactory(ptr)
 @ stdcall ZwDebugActiveProcess(ptr ptr)
 @ stdcall ZwDebugContinue(ptr ptr long)
 @ stdcall ZwDelayExecution(long ptr)
@@ -1467,7 +1467,7 @@
 @ stdcall ZwDeleteFile(ptr)
 @ stdcall ZwDeleteKey(long)
 @ stdcall ZwDeleteObjectAuditAlarm(ptr ptr long)
-@ stub -version=0x600+ ZwDeletePrivateNamespace
+@ stdcall -version=0x600+ ZwDeletePrivateNamespace(ptr)
 @ stdcall ZwDeleteValueKey(long ptr)
 @ stdcall ZwDeviceIoControlFile(long long long long long long long long long long)
 @ stdcall ZwDisplayString(ptr)
@@ -1477,42 +1477,42 @@
 @ stdcall ZwEnumerateDriverEntries(ptr ptr)
 @ stdcall ZwEnumerateKey(long long long ptr long ptr)
 @ stdcall ZwEnumerateSystemEnvironmentValuesEx(long ptr long)
-@ stub -version=0x600+ ZwEnumerateTransactionObject
+@ stdcall -version=0x600+ ZwEnumerateTransactionObject(ptr)
 @ stdcall ZwEnumerateValueKey(long long long ptr long ptr)
 @ stdcall ZwExtendSection(ptr ptr)
 @ stdcall ZwFilterToken(ptr long ptr ptr ptr ptr)
 @ stdcall ZwFindAtom(ptr long ptr)
 @ stdcall ZwFlushBuffersFile(long ptr)
-@ stub -version=0x600+ ZwFlushInstallUILanguage
+@ stdcall -version=0x600+ ZwFlushInstallUILanguage(ptr)
 @ stdcall ZwFlushInstructionCache(long ptr long)
 @ stdcall ZwFlushKey(long)
-@ stub -version=0x600+ ZwFlushProcessWriteBuffers
+@ stdcall -version=0x600+ ZwFlushProcessWriteBuffers(ptr)
 @ stdcall ZwFlushVirtualMemory(long ptr ptr long)
 @ stdcall ZwFlushWriteBuffer()
 @ stdcall ZwFreeUserPhysicalPages(ptr ptr ptr)
 @ stdcall ZwFreeVirtualMemory(long ptr ptr long)
-@ stub -version=0x600+ ZwFreezeRegistry
-@ stub -version=0x600+ ZwFreezeTransactions
+@ stdcall -version=0x600+ ZwFreezeRegistry(ptr)
+@ stdcall -version=0x600+ ZwFreezeTransactions(ptr)
 @ stdcall ZwFsControlFile(long long long long long long long long long long)
 @ stdcall ZwGetContextThread(long ptr)
 @ stdcall ZwGetCurrentProcessorNumber()
 @ stdcall ZwGetDevicePowerState(ptr ptr)
-@ stub -version=0x600+ ZwGetMUIRegistryInfo
-@ stub -version=0x600+ ZwGetNextProcess
-@ stub -version=0x600+ ZwGetNextThread
-@ stub -version=0x600+ ZwGetNlsSectionPtr
-@ stub -version=0x600+ ZwGetNotificationResourceManager
+@ stdcall -version=0x600+ ZwGetMUIRegistryInfo(ptr)
+@ stdcall -version=0x600+ ZwGetNextProcess(ptr)
+@ stdcall -version=0x600+ ZwGetNextThread(ptr)
+@ stdcall -version=0x600+ ZwGetNlsSectionPtr(ptr)
+@ stdcall -version=0x600+ ZwGetNotificationResourceManager(ptr)
 @ stdcall ZwGetPlugPlayEvent(long long ptr long)
 @ stdcall ZwGetWriteWatch(long long ptr long ptr ptr ptr)
 @ stdcall ZwImpersonateAnonymousToken(ptr)
 @ stdcall ZwImpersonateClientOfPort(ptr ptr)
 @ stdcall ZwImpersonateThread(ptr ptr ptr)
-@ stub -version=0x600+ ZwInitializeNlsFiles
+@ stdcall -version=0x600+ ZwInitializeNlsFiles(ptr)
 @ stdcall ZwInitializeRegistry(long)
 @ stdcall ZwInitiatePowerAction(long long long long)
 @ stdcall ZwIsProcessInJob(long long)
 @ stdcall ZwIsSystemResumeAutomatic()
-@ stub -version=0x600+ ZwIsUILanguageComitted
+@ stdcall -version=0x600+ ZwIsUILanguageComitted(ptr)
 @ stdcall ZwListenPort(ptr ptr)
 @ stdcall ZwLoadDriver(ptr)
 @ stdcall ZwLoadKey2(ptr ptr long)
@@ -1524,7 +1524,7 @@
 @ stdcall ZwLockVirtualMemory(long ptr ptr long)
 @ stdcall ZwMakePermanentObject(ptr)
 @ stdcall ZwMakeTemporaryObject(long)
-@ stub -version=0x600+ ZwMapCMFModule
+@ stdcall -version=0x600+ ZwMapCMFModule(ptr)
 @ stdcall ZwMapUserPhysicalPages(ptr ptr ptr)
 @ stdcall ZwMapUserPhysicalPagesScatter(ptr ptr ptr)
 @ stdcall ZwMapViewOfSection(long long ptr long long ptr ptr long long long)
@@ -1534,43 +1534,43 @@
 @ stdcall ZwNotifyChangeKey(long long ptr ptr ptr long long ptr long long)
 @ stdcall ZwNotifyChangeMultipleKeys(ptr long ptr ptr ptr ptr ptr long long ptr long long)
 @ stdcall ZwOpenDirectoryObject(long long long)
-@ stub -version=0x600+ ZwOpenEnlistment
+@ stdcall -version=0x600+ ZwOpenEnlistment(ptr)
 @ stdcall ZwOpenEvent(long long long)
 @ stdcall ZwOpenEventPair(ptr long ptr)
 @ stdcall ZwOpenFile(ptr long ptr ptr long long)
 @ stdcall ZwOpenIoCompletion(ptr long ptr)
 @ stdcall ZwOpenJobObject(ptr long ptr)
 @ stdcall ZwOpenKey(ptr long ptr)
-@ stub -version=0x600+ ZwOpenKeyTransacted
+@ stdcall -version=0x600+ ZwOpenKeyTransacted(ptr)
 @ stdcall ZwOpenKeyedEvent(ptr long ptr)
 @ stdcall ZwOpenMutant(ptr long ptr)
 @ stdcall ZwOpenObjectAuditAlarm(ptr ptr ptr ptr ptr ptr long long ptr long long ptr)
-@ stub -version=0x600+ ZwOpenPrivateNamespace
+@ stdcall -version=0x600+ ZwOpenPrivateNamespace(ptr)
 @ stdcall ZwOpenProcess(ptr long ptr ptr)
 @ stdcall ZwOpenProcessToken(long long ptr)
 @ stdcall ZwOpenProcessTokenEx(long long long ptr)
-@ stub -version=0x600+ ZwOpenResourceManager
+@ stdcall -version=0x600+ ZwOpenResourceManager(ptr)
 @ stdcall ZwOpenSection(ptr long ptr)
 @ stdcall ZwOpenSemaphore(long long ptr)
-@ stub -version=0x600+ ZwOpenSession
+@ stdcall -version=0x600+ ZwOpenSession(ptr)
 @ stdcall ZwOpenSymbolicLinkObject (ptr long ptr)
 @ stdcall ZwOpenThread(ptr long ptr ptr)
 @ stdcall ZwOpenThreadToken(long long long ptr)
 @ stdcall ZwOpenThreadTokenEx(long long long long ptr)
 @ stdcall ZwOpenTimer(ptr long ptr)
-@ stub -version=0x600+ ZwOpenTransaction
-@ stub -version=0x600+ ZwOpenTransactionManager
+@ stdcall -version=0x600+ ZwOpenTransaction(ptr)
+@ stdcall -version=0x600+ ZwOpenTransactionManager(ptr)
 @ stdcall ZwPlugPlayControl(ptr ptr long)
 @ stdcall ZwPowerInformation(long ptr long ptr long)
-@ stub -version=0x600+ ZwPrePrepareComplete
-@ stub -version=0x600+ ZwPrePrepareEnlistment
-@ stub -version=0x600+ ZwPrepareComplete
-@ stub -version=0x600+ ZwPrepareEnlistment
+@ stdcall -version=0x600+ ZwPrePrepareComplete(ptr)
+@ stdcall -version=0x600+ ZwPrePrepareEnlistment(ptr)
+@ stdcall -version=0x600+ ZwPrepareComplete(ptr)
+@ stdcall -version=0x600+ ZwPrepareEnlistment(ptr)
 @ stdcall ZwPrivilegeCheck(ptr ptr ptr)
 @ stdcall ZwPrivilegeObjectAuditAlarm(ptr ptr ptr long ptr long)
 @ stdcall ZwPrivilegedServiceAuditAlarm(ptr ptr ptr ptr long)
-@ stub -version=0x600+ ZwPropagationComplete
-@ stub -version=0x600+ ZwPropagationFailed
+@ stdcall -version=0x600+ ZwPropagationComplete(ptr)
+@ stdcall -version=0x600+ ZwPropagationFailed(ptr)
 @ stdcall ZwProtectVirtualMemory(long ptr ptr long ptr)
 @ stdcall ZwPulseEvent(long ptr)
 @ stdcall ZwQueryAttributesFile(ptr ptr)
@@ -1586,22 +1586,22 @@
 @ stdcall ZwQueryEvent(long long ptr long ptr)
 @ stdcall ZwQueryFullAttributesFile(ptr ptr)
 @ stdcall ZwQueryInformationAtom(long long ptr long ptr)
-@ stub -version=0x600+ ZwQueryInformationEnlistment
+@ stdcall -version=0x600+ ZwQueryInformationEnlistment(ptr)
 @ stdcall ZwQueryInformationFile(long ptr ptr long long)
 @ stdcall ZwQueryInformationJobObject(long long ptr long ptr)
 @ stdcall ZwQueryInformationPort(ptr long ptr long ptr)
 @ stdcall ZwQueryInformationProcess(long long ptr long ptr)
-@ stub -version=0x600+ ZwQueryInformationResourceManager
+@ stdcall -version=0x600+ ZwQueryInformationResourceManager(ptr)
 @ stdcall ZwQueryInformationThread(long long ptr long ptr)
 @ stdcall ZwQueryInformationToken(long long ptr long ptr)
-@ stub -version=0x600+ ZwQueryInformationTransaction
-@ stub -version=0x600+ ZwQueryInformationTransactionManager
-@ stub -version=0x600+ ZwQueryInformationWorkerFactory
+@ stdcall -version=0x600+ ZwQueryInformationTransaction(ptr)
+@ stdcall -version=0x600+ ZwQueryInformationTransactionManager(ptr)
+@ stdcall -version=0x600+ ZwQueryInformationWorkerFactory(ptr)
 @ stdcall ZwQueryInstallUILanguage(ptr)
 @ stdcall ZwQueryIntervalProfile(long ptr)
 @ stdcall ZwQueryIoCompletion(long long ptr long ptr)
 @ stdcall ZwQueryKey(long long ptr long ptr)
-@ stub -version=0x600+ ZwQueryLicenseValue
+@ stdcall -version=0x600+ ZwQueryLicenseValue(ptr)
 @ stdcall ZwQueryMultipleValueKey(long ptr long ptr long ptr)
 @ stdcall ZwQueryMutant(long long ptr long ptr)
 @ stdcall ZwQueryObject(long long long long long)
@@ -1628,26 +1628,26 @@
 @ stdcall ZwRaiseHardError(long long long ptr long ptr)
 @ stdcall ZwReadFile(long long ptr ptr ptr ptr long ptr ptr)
 @ stdcall ZwReadFileScatter(long long ptr ptr ptr ptr long ptr ptr)
-@ stub -version=0x600+ ZwReadOnlyEnlistment
+@ stdcall -version=0x600+ ZwReadOnlyEnlistment(ptr)
 @ stdcall ZwReadRequestData(ptr ptr long ptr long ptr)
 @ stdcall ZwReadVirtualMemory(long ptr ptr long ptr)
-@ stub -version=0x600+ ZwRecoverEnlistment
-@ stub -version=0x600+ ZwRecoverResourceManager
-@ stub -version=0x600+ ZwRecoverTransactionManager
-@ stub -version=0x600+ ZwRegisterProtocolAddressInformation
+@ stdcall -version=0x600+ ZwRecoverEnlistment(ptr)
+@ stdcall -version=0x600+ ZwRecoverResourceManager(ptr)
+@ stdcall -version=0x600+ ZwRecoverTransactionManager(ptr)
+@ stdcall -version=0x600+ ZwRegisterProtocolAddressInformation(ptr)
 @ stdcall ZwRegisterThreadTerminatePort(ptr)
-@ stub -version=0x600+ ZwReleaseCMFViewOwnership
+@ stdcall -version=0x600+ ZwReleaseCMFViewOwnership(ptr)
 @ stdcall ZwReleaseKeyedEvent(ptr ptr long ptr)
 @ stdcall ZwReleaseMutant(long ptr)
 @ stdcall ZwReleaseSemaphore(long long ptr)
-@ stub -version=0x600+ ZwReleaseWorkerFactoryWorker
+@ stdcall -version=0x600+ ZwReleaseWorkerFactoryWorker(ptr)
 @ stdcall ZwRemoveIoCompletion(ptr ptr ptr ptr ptr)
-@ stub -version=0x600+ ZwRemoveIoCompletionEx
+@ stdcall -version=0x600+ ZwRemoveIoCompletionEx(ptr)
 @ stdcall ZwRemoveProcessDebug(ptr ptr)
 @ stdcall ZwRenameKey(ptr ptr)
-@ stub -version=0x600+ ZwRenameTransactionManager
+@ stdcall -version=0x600+ ZwRenameTransactionManager(ptr)
 @ stdcall ZwReplaceKey(ptr long ptr)
-@ stub -version=0x600+ ZwReplacePartitionUnit
+@ stdcall -version=0x600+ ZwReplacePartitionUnit(ptr)
 @ stdcall ZwReplyPort(ptr ptr)
 @ stdcall ZwReplyWaitReceivePort(ptr ptr ptr ptr)
 @ stdcall ZwReplyWaitReceivePortEx(ptr ptr ptr ptr ptr)
@@ -1661,10 +1661,10 @@
 @ stdcall ZwRestoreKey(long long long)
 @ stdcall ZwResumeProcess(ptr)
 @ stdcall ZwResumeThread(long long)
-@ stub -version=0x600+ ZwRollbackComplete
-@ stub -version=0x600+ ZwRollbackEnlistment
-@ stub -version=0x600+ ZwRollbackTransaction
-@ stub -version=0x600+ ZwRollforwardTransactionManager
+@ stdcall -version=0x600+ ZwRollbackComplete(ptr)
+@ stdcall -version=0x600+ ZwRollbackEnlistment(ptr)
+@ stdcall -version=0x600+ ZwRollbackTransaction(ptr)
+@ stdcall -version=0x600+ ZwRollforwardTransactionManager(ptr)
 @ stdcall ZwSaveKey(long long)
 @ stdcall ZwSaveKeyEx(ptr ptr long)
 @ stdcall ZwSaveMergedKeys(ptr ptr ptr)
@@ -1683,18 +1683,18 @@
 @ stdcall ZwSetHighEventPair(ptr)
 @ stdcall ZwSetHighWaitLowEventPair(ptr)
 @ stdcall ZwSetInformationDebugObject(ptr long ptr long ptr)
-@ stub -version=0x600+ ZwSetInformationEnlistment
+@ stdcall -version=0x600+ ZwSetInformationEnlistment(ptr)
 @ stdcall ZwSetInformationFile(long long long long long)
 @ stdcall ZwSetInformationJobObject(long long ptr long)
 @ stdcall ZwSetInformationKey(long long ptr long)
 @ stdcall ZwSetInformationObject(long long ptr long)
 @ stdcall ZwSetInformationProcess(long long long long)
-@ stub -version=0x600+ ZwSetInformationResourceManager
+@ stdcall -version=0x600+ ZwSetInformationResourceManager(ptr)
 @ stdcall ZwSetInformationThread(long long ptr long)
 @ stdcall ZwSetInformationToken(long long ptr long)
-@ stub -version=0x600+ ZwSetInformationTransaction
-@ stub -version=0x600+ ZwSetInformationTransactionManager
-@ stub -version=0x600+ ZwSetInformationWorkerFactory
+@ stdcall -version=0x600+ ZwSetInformationTransaction(ptr)
+@ stdcall -version=0x600+ ZwSetInformationTransactionManager(ptr)
+@ stdcall -version=0x600+ ZwSetInformationWorkerFactory(ptr)
 @ stdcall ZwSetIntervalProfile(long long)
 @ stdcall ZwSetIoCompletion(ptr long ptr long long)
 @ stdcall ZwSetLdtEntries(long int64 long int64)
@@ -1714,9 +1714,9 @@
 @ stdcall ZwSetValueKey(long long long long long long)
 @ stdcall ZwSetVolumeInformationFile(long ptr ptr long long)
 @ stdcall ZwShutdownSystem(long)
-@ stub -version=0x600+ ZwShutdownWorkerFactory
+@ stdcall -version=0x600+ ZwShutdownWorkerFactory(ptr)
 @ stdcall ZwSignalAndWaitForSingleObject(long long long ptr)
-@ stub -version=0x600+ ZwSinglePhaseReject
+@ stdcall -version=0x600+ ZwSinglePhaseReject(ptr)
 @ stdcall ZwStartProfile(ptr)
 @ stdcall ZwStopProfile(ptr)
 @ stdcall ZwSuspendProcess(ptr)
@@ -1726,9 +1726,9 @@
 @ stdcall ZwTerminateProcess(ptr long)
 @ stdcall ZwTerminateThread(ptr long)
 @ stdcall ZwTestAlert()
-@ stub -version=0x600+ ZwThawRegistry
-@ stub -version=0x600+ ZwThawTransactions
-@ stub -version=0x600+ ZwTraceControl
+@ stdcall -version=0x600+ ZwThawRegistry(ptr)
+@ stdcall -version=0x600+ ZwThawTransactions(ptr)
+@ stdcall -version=0x600+ ZwTraceControl(ptr)
 @ stdcall ZwTraceEvent(long long long ptr)
 @ stdcall ZwTranslateFilePath(ptr long ptr long)
 @ stdcall ZwUnloadDriver(ptr)
@@ -1744,10 +1744,10 @@
 @ stdcall ZwWaitForMultipleObjects32(long ptr long long ptr)
 @ stdcall ZwWaitForMultipleObjects(long ptr long long ptr)
 @ stdcall ZwWaitForSingleObject(long long long)
-@ stub -version=0x600+ ZwWaitForWorkViaWorkerFactory
+@ stdcall -version=0x600+ ZwWaitForWorkViaWorkerFactory(ptr)
 @ stdcall ZwWaitHighEventPair(ptr)
 @ stdcall ZwWaitLowEventPair(ptr)
-@ stub -version=0x600+ ZwWorkerFactoryWorkerReady
+@ stdcall -version=0x600+ ZwWorkerFactoryWorkerReady(ptr)
 @ stdcall ZwWriteFile(long long ptr ptr ptr ptr long ptr ptr)
 @ stdcall ZwWriteFileGather(long long ptr ptr ptr ptr long ptr ptr)
 @ stdcall ZwWriteRequestData(ptr ptr long ptr long ptr)

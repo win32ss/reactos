@@ -5,7 +5,7 @@
 
     TEXTAREA
 
-#define SVC_(name, argcount) STUB_U name
+#define SVC_(name, syscallid, argcount) STUB_U name
 
 #include <sysfuncs.h>
 
@@ -15,7 +15,7 @@
 
 .code
 
-#define SVC_(name, argcount) STUB_U name, argcount
+#define SVC_(name, syscallid, argcount) STUB_U name, syscallid, argcount
 
 #include <sysfuncs.h>
 

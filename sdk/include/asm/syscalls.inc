@@ -50,8 +50,6 @@ $ZwFuncEndName
 
 #include <asm.inc>
 
-SyscallId = 0
-
 #ifdef _M_IX86
 #define KUSER_SHARED_SYSCALL HEX(7ffe0300)
 #define KGDT_R0_CODE 8
@@ -136,12 +134,11 @@ MACRO(START_PROC, Name, StackBytes)
 ENDM
 #endif
 
-MACRO(STUB_U, Name, ArgCount)
+MACRO(STUB_U, Name, SyscallId, ArgCount)
     MAKE_LABEL Zw&Name, %ArgCount * 4
     START_PROC Nt&Name, %ArgCount * 4
     STUBCODE_U Name, SyscallId, %ArgCount
     .ENDP
-    SyscallId = SyscallId + 1
 ENDM
 
 MACRO(STUB_K, Name, ArgCount)

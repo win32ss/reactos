@@ -1244,4 +1244,89 @@ RtlGetTickCount(VOID)
                                   SharedUserData->TickCountMultiplier));
 }
 
+/*
+ * @implemented
+ */
+NTSYSAPI
+VOID
+NTAPI
+RtlExitUserProcess (IN DWORD dwStatus)
+{
+   NTSTATUS Status;
+   PPEB Peb = NtCurrentPeb();
+
+   RtlEnterCriticalSection(&LdrpLoaderLock);
+   RtlEnterCriticalSection(Peb->FastPebLock);
+   RtlLockHeap(RtlGetProcessHeap());
+
+   Status = NtTerminateProcess(0, dwStatus);
+
+   RtlUnlockHeap(RtlGetProcessHeap());
+   RtlLeaveCriticalSection(Peb->FastPebLock);   
+   RtlLeaveCriticalSection(&LdrpLoaderLock);
+
+   if (!NT_SUCCESS(Status))
+   {
+      NtTerminateThread(NtCurrentThread(), dwStatus);
+      return;
+   }
+
+   LdrShutdownProcess();
+   NtTerminateProcess(NtCurrentProcess(), dwStatus);
+}
+
+/*
+ * @implemented
+ */
+NTSYSAPI
+PVOID
+NTAPI
+RtlGetCurrentTransaction(VOID)
+{
+    return NtCurrentTeb()->CurrentTransactionHandle;
+}
+
+/*
+ * @implemented
+ */
+NTSYSAPI
+BOOLEAN
+NTAPI
+RtlSetCurrentTransaction(IN PVOID CurrentTransactionHandle)
+{
+    if (CurrentTransactionHandle == INVALID_HANDLE_VALUE)
+    {
+         return FALSE;
+    }
+    NtCurrentTeb()->CurrentTransactionHandle = CurrentTransactionHandle;
+    return TRUE;
+}
+
+/*
+ * @unimplemented
+ */ /*
+NTSYSAPI
+BOOLEAN
+NTAPI
+RtlpCheckDynamicTimeZoneInformation(IN USHORT wYear, 
+                                    OUT PDYNAMIC_TIME_ZONE_INFORMATION pdtzi)
+{
+    return FALSE;
+}
+*/
+/*
+ * @unimplemented
+ *//*
+NTSYSAPI
+NTSTATUS
+NTAPI
+RtlAddMandatoryAce(IN OUT PACL Acl,
+                   IN ULONG Revision,
+                   IN ULONG Flags,
+                   IN ULONG MandatoryFlags,
+                   IN UCHAR AceType,
+                   IN PSID LabelSid)
+{
+    return STATUS_NOT_IMPLEMENTED;
+}*/
 /* EOF */
