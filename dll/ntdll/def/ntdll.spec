@@ -814,7 +814,7 @@
 @ stdcall RtlEqualString(ptr ptr long)
 @ stdcall RtlEqualUnicodeString(ptr ptr long)
 @ stdcall RtlEraseUnicodeString(ptr)
-@ stub -version=0x600+ RtlExitUserProcess
+@ stdcall -version=0x600+ RtlExitUserProcess(long)
 @ stdcall RtlExitUserThread(long)
 @ stub -version=0x600+ RtlExpandEnvironmentStrings
 @ stdcall RtlExpandEnvironmentStrings_U(ptr ptr ptr ptr)
@@ -873,7 +873,7 @@
 @ stdcall RtlGetCurrentDirectory_U(long ptr)
 @ stdcall RtlGetCurrentPeb()
 @ stdcall RtlGetCurrentProcessorNumber() ; 5.2 SP1 and higher
-@ stub -version=0x600+ RtlGetCurrentTransaction
+@ stdcall -version=0x600+ RtlGetCurrentTransaction()
 @ stdcall RtlGetDaclSecurityDescriptor(ptr ptr ptr ptr)
 @ stdcall RtlGetElementGenericTable(ptr long)
 @ stdcall RtlGetElementGenericTableAvl(ptr long)
@@ -1141,7 +1141,7 @@
 @ stdcall RtlSetCriticalSectionSpinCount(ptr long)
 @ stdcall RtlSetCurrentDirectory_U(ptr)
 @ stdcall RtlSetCurrentEnvironment(wstr ptr)
-@ stub -version=0x600+ RtlSetCurrentTransaction
+@ stdcall -version=0x600+ RtlSetCurrentTransaction(ptr)
 @ stdcall RtlSetDaclSecurityDescriptor(ptr long ptr long)
 @ stub -version=0x600+ RtlSetDynamicTimeZoneInformation
 @ stdcall RtlSetEnvironmentStrings(wstr long)
