@@ -17,12 +17,12 @@
 @ stdcall InitializeSecurityContextW(ptr ptr wstr long long long ptr long ptr ptr ptr ptr) schan_InitializeSecurityContextW
 @ stdcall MakeSignature(ptr long ptr long) secur32.MakeSignature
 @ stub OpenSslPerformanceData
-@ stdcall QueryContextAttributesA(ptr long ptr) secur32.QueryContextAttributesA
-@ stdcall QueryContextAttributesW(ptr long ptr) secur32.QueryContextAttributesW
+@ stdcall QueryContextAttributesA(ptr long ptr) schan_QueryContextAttributesA
+@ stdcall QueryContextAttributesW(ptr long ptr) schan_QueryContextAttributesW
 @ stdcall QuerySecurityPackageInfoA(str ptr) secur32.QuerySecurityPackageInfoA
 @ stdcall QuerySecurityPackageInfoW(wstr ptr) secur32.QuerySecurityPackageInfoW
 @ stdcall RevertSecurityContext(ptr) secur32.RevertSecurityContext
-@ stdcall SealMessage(ptr long ptr long) secur32.SealMessage
+@ stdcall SealMessage(ptr long ptr long) schan_EncryptMessage
 @ stdcall SpLsaModeInitialize(long ptr ptr ptr)
 @ stdcall SpUserModeInitialize(long ptr ptr ptr)
 @ stub SslCrackCertificate
@@ -33,5 +33,5 @@
 @ stub SslGenerateRandomBits
 @ stub SslGetMaximumKeySize
 @ stub SslLoadCertificate
-@ stdcall UnsealMessage(ptr ptr long ptr) secur32.UnsealMessage
+@ stdcall UnsealMessage(ptr ptr long ptr) schan_DecryptMessage
 @ stdcall VerifySignature(ptr ptr long ptr) secur32.VerifySignature
