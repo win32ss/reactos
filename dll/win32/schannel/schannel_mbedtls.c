@@ -222,9 +222,6 @@ BOOL schan_imp_create_session(schan_imp_session *session, schan_credentials *cre
     TRACE("MBEDTLS set authmode\n");
     mbedtls_ssl_conf_authmode(&s->conf, MBEDTLS_SSL_VERIFY_NONE);
 
-    TRACE("MBEDTLS set rng\n");
-    mbedtls_ssl_conf_rng(&s->conf, mbedtls_ctr_drbg_random, &s->ctr_drbg);
-
     TRACE("MBEDTLS set dbg\n");
     mbedtls_ssl_conf_dbg(&s->conf, schan_imp_debug, stdout);
 
@@ -553,7 +550,7 @@ unsigned int schan_imp_get_max_message_size(schan_imp_session session)
 {
     MBEDTLS_SESSION *s = (MBEDTLS_SESSION *)session;
 
-    unsigned int max_frag_len = mbedtls_ssl_get_max_frag_len(&s->ssl);
+    unsigned int max_frag_len = mbedtls_ssl_get_input_max_frag_len(&s->ssl);
 
     TRACE("MBEDTLS schan_imp_get_max_message_size %p returning %u.\n", session, max_frag_len);
 

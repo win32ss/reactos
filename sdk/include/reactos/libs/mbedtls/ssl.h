@@ -2874,9 +2874,9 @@ int mbedtls_ssl_get_record_expansion( const mbedtls_ssl_context *ssl );
  *
  * \param ssl      SSL context
  *
- * \return         Current maximum fragment length.
+ * \return         Current maximum input fragment length.
  */
-size_t mbedtls_ssl_get_max_frag_len( const mbedtls_ssl_context *ssl );
+size_t mbedtls_ssl_get_input_max_frag_len( const mbedtls_ssl_context *ssl );
 #endif /* MBEDTLS_SSL_MAX_FRAGMENT_LENGTH */
 
 /**
