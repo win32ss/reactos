@@ -42,11 +42,12 @@ WINE_DEFAULT_DEBUG_CHANNEL(schannel);
 
 #include <mbedtls/ssl.h>
 #include <mbedtls/net_sockets.h>
+#include <mbedtls/md_wrap.h>
 
-#include <mbedtls/entropy.h>
-#include <mbedtls/ctr_drbg.h>
-#include <mbedtls/md_internal.h>
-#include <mbedtls/ssl_internal.h>
+#include <mbedtls/private/entropy.h>
+#include <mbedtls/private/ctr_drbg.h>
+#include <mbedtls/private/cipher.h>
+#include <mbedtls/private/pk_private.h>
 
 #define ROS_SCHAN_IS_BLOCKING(read_len)          ((read_len & 0xFFF00000) == 0xCCC00000)
 #define ROS_SCHAN_IS_BLOCKING_MARSHALL(read_len) ((read_len & 0x000FFFFF) |  0xCCC00000)
@@ -76,6 +77,9 @@ typedef struct
     mbedtls_ctr_drbg_context ctr_drbg;
     struct schan_transport  *transport;
 } MBEDTLS_SESSION, *PMBEDTLS_SESSION;
+
+const mbedtls_cipher_info_t *mbedtls_cipher_info_from_type(const mbedtls_cipher_type_t cipher_type);
+size_t mbedtls_ssl_get_input_max_frag_len(const mbedtls_ssl_context *ssl);
 
 /* custom `net_recv` callback adapter, mbedTLS uses it in mbedtls_ssl_read for
    pulling data from the underlying win32 net stack */
@@ -347,30 +351,7 @@ static DWORD schannel_get_protocol(const mbedtls_ssl_context *ssl, const mbedtls
      * there's no reason it couldn't be used for servers as well. The
      * context doesn't tell us which it is, so decide based on ssl endpoint value. */
 
-    switch (ssl->minor_ver)
-    {
-        case MBEDTLS_SSL_MINOR_VERSION_0:
-            return (conf->endpoint == MBEDTLS_SSL_IS_CLIENT) ? SP_PROT_SSL3_CLIENT :
-                                                               SP_PROT_SSL3_SERVER;
-
-        case MBEDTLS_SSL_MINOR_VERSION_1:
-            return (conf->endpoint == MBEDTLS_SSL_IS_CLIENT) ? SP_PROT_TLS1_0_CLIENT :
-                                                               SP_PROT_TLS1_0_SERVER;
-
-        case MBEDTLS_SSL_MINOR_VERSION_2:
-            return (conf->endpoint == MBEDTLS_SSL_IS_CLIENT) ? SP_PROT_TLS1_1_CLIENT :
-                                                               SP_PROT_TLS1_1_SERVER;
-
-        case MBEDTLS_SSL_MINOR_VERSION_3:
-            return (conf->endpoint == MBEDTLS_SSL_IS_CLIENT) ? SP_PROT_TLS1_2_CLIENT :
-                                                               SP_PROT_TLS1_2_SERVER;
-
-        default:
-        {
-            FIXME("MBEDTLS schannel_get_protocol: unknown protocol %d\n", ssl->minor_ver);
-            return 0;
-        }
-    }
+   return 0;
 }
 
 static ALG_ID schannel_get_cipher_algid(int ciphersuite_id)
@@ -482,8 +463,6 @@ static ALG_ID schannel_get_mac_algid(int ciphersuite_id)
     switch (cipher_suite->mac)
     {
         case MBEDTLS_MD_NONE:      return 0;
-        case MBEDTLS_MD_MD2:       return CALG_MD2;
-        case MBEDTLS_MD_MD4:       return CALG_MD4;
         case MBEDTLS_MD_MD5:       return CALG_MD5;
         case MBEDTLS_MD_SHA1:      return CALG_SHA1;
         case MBEDTLS_MD_SHA224:    return CALG_SHA;
@@ -510,18 +489,6 @@ static ALG_ID schannel_get_kx_algid(int ciphersuite_id)
         case MBEDTLS_KEY_EXCHANGE_PSK: /* the original implementation does not support    */
             return 0;                  /* any PSK, and does not define any `CALG_PSK` :)  */
 
-        case MBEDTLS_KEY_EXCHANGE_RSA:
-        case MBEDTLS_KEY_EXCHANGE_RSA_PSK:
-            return CALG_RSA_KEYX;
-
-        case MBEDTLS_KEY_EXCHANGE_DHE_RSA:
-        case MBEDTLS_KEY_EXCHANGE_DHE_PSK:
-            return CALG_DH_EPHEM;
-
-        case MBEDTLS_KEY_EXCHANGE_ECDH_RSA:
-        case MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA:
-            return CALG_ECDH;
-
         case MBEDTLS_KEY_EXCHANGE_ECDHE_RSA:
         case MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA:
         case MBEDTLS_KEY_EXCHANGE_ECDHE_PSK:
@@ -537,13 +504,14 @@ static ALG_ID schannel_get_kx_algid(int ciphersuite_id)
 
 unsigned int schan_imp_get_session_cipher_block_size(schan_imp_session session)
 {
-    MBEDTLS_SESSION *s = (MBEDTLS_SESSION *)session;
+    return 32;
+    /*MBEDTLS_SESSION *s = (MBEDTLS_SESSION *)session;
 
     unsigned int cipher_block_size = mbedtls_cipher_get_block_size(&s->ssl.transform->cipher_ctx_enc);
 
     TRACE("MBEDTLS schan_imp_get_session_cipher_block_size %p returning %u.\n", session, cipher_block_size);
 
-    return cipher_block_size;
+    return cipher_block_size;*/
 }
 
 unsigned int schan_imp_get_max_message_size(schan_imp_session session)
