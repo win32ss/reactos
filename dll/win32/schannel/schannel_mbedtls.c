@@ -75,6 +75,8 @@ typedef struct
     mbedtls_ssl_config       conf;
     mbedtls_entropy_context  entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
+    mbedtls_x509_crt         cacert;
+    mbedtls_pk_context       pkctx;
     struct schan_transport  *transport;
 } MBEDTLS_SESSION, *PMBEDTLS_SESSION;
 
@@ -181,6 +183,9 @@ DWORD schan_imp_enabled_protocols(void)
 #ifdef MBEDTLS_SSL_PROTO_TLS1_2
         | SP_PROT_TLS1_2_CLIENT | SP_PROT_TLS1_2_SERVER
 #endif
+#ifdef MBEDTLS_SSL_PROTO_TLS1_3
+        | SP_PROT_TLS1_3_CLIENT
+#endif
         ;
 }
 
@@ -204,6 +209,9 @@ BOOL schan_imp_create_session(schan_imp_session *session, schan_credentials *cre
     TRACE("MBEDTLS init entropy\n");
     mbedtls_entropy_init(&s->entropy);
 
+    TRACE("PSA init crypto\n");
+    psa_crypto_init();
+
     TRACE("MBEDTLS init random - change static entropy private data\n");
     mbedtls_ctr_drbg_init(&s->ctr_drbg);
     mbedtls_ctr_drbg_seed(&s->ctr_drbg, mbedtls_entropy_func, &s->entropy, NULL, 0);
@@ -223,8 +231,31 @@ BOOL schan_imp_create_session(schan_imp_session *session, schan_credentials *cre
     mbedtls_ssl_conf_endpoint(&s->conf,   (cred->credential_use & SECPKG_CRED_INBOUND) ? MBEDTLS_SSL_IS_SERVER :
                                                                                          MBEDTLS_SSL_IS_CLIENT);
 
-    TRACE("MBEDTLS set authmode\n");
-    mbedtls_ssl_conf_authmode(&s->conf, MBEDTLS_SSL_VERIFY_NONE);
+    const char *cafile = "trusted-ca-list.pem";
+
+    mbedtls_x509_crt_init(&s->cacert);
+
+    if(mbedtls_x509_crt_parse_file(&s->cacert, cafile) != 0 )
+    {
+        WARN("Could not initialize trusted CA list. TLS 1.3 will be unusable.\n");
+        mbedtls_ssl_conf_authmode(&s->conf, MBEDTLS_SSL_VERIFY_NONE);
+        mbedtls_ssl_conf_min_tls_version(&s->conf, MBEDTLS_SSL_VERSION_TLS1_2);
+        mbedtls_ssl_conf_max_tls_version(&s->conf, MBEDTLS_SSL_VERSION_TLS1_2);
+    }
+    else
+    {
+        mbedtls_ssl_conf_authmode(&s->conf, MBEDTLS_SSL_VERIFY_REQUIRED);
+        mbedtls_ssl_conf_session_tickets(&s->conf, 0);
+        mbedtls_ssl_conf_renegotiation(&s->conf, MBEDTLS_SSL_RENEGOTIATION_ENABLED);
+        mbedtls_ssl_conf_min_tls_version(&s->conf, MBEDTLS_SSL_VERSION_TLS1_2);
+        mbedtls_ssl_conf_max_tls_version(&s->conf, MBEDTLS_SSL_VERSION_TLS1_3);
+    }
+
+    WARN("MBEDTLS PK init\n");
+    mbedtls_pk_init(&s->pkctx);
+
+    TRACE("MBEDTLS set CA chain");
+    mbedtls_ssl_conf_ca_chain(&s->conf, &s->cacert, NULL);
 
     TRACE("MBEDTLS set dbg\n");
     mbedtls_ssl_conf_dbg(&s->conf, schan_imp_debug, stdout);
@@ -410,6 +441,14 @@ static ALG_ID schannel_get_cipher_algid(int ciphersuite_id)
         case MBEDTLS_CIPHER_CAMELLIA_128_GCM:
         case MBEDTLS_CIPHER_CAMELLIA_192_GCM:
         case MBEDTLS_CIPHER_CAMELLIA_256_GCM:
+    #ifdef MBEDTLS_CCM_C
+        case MBEDTLS_CIPHER_CAMELLIA_128_CCM:
+        case MBEDTLS_CIPHER_CAMELLIA_192_CCM:
+        case MBEDTLS_CIPHER_CAMELLIA_256_CCM:
+        case MBEDTLS_CIPHER_CAMELLIA_128_CCM_STAR_NO_TAG:
+        case MBEDTLS_CIPHER_CAMELLIA_192_CCM_STAR_NO_TAG:
+        case MBEDTLS_CIPHER_CAMELLIA_256_CCM_STAR_NO_TAG:
+    #endif
             return CALG_AES_256;  // (as schannel does not support it fake it as AES, which has a
                                   //  similar profile, offering modern high security) CALG_CAMELLIA;
 #endif
@@ -423,6 +462,7 @@ static ALG_ID schannel_get_cipher_algid(int ciphersuite_id)
         case MBEDTLS_CIPHER_AES_128_GCM:
     #ifdef MBEDTLS_CCM_C
         case MBEDTLS_CIPHER_AES_128_CCM:
+        case MBEDTLS_CIPHER_AES_128_CCM_STAR_NO_TAG:
     #endif
             return CALG_AES_128;
 
@@ -433,6 +473,7 @@ static ALG_ID schannel_get_cipher_algid(int ciphersuite_id)
         case MBEDTLS_CIPHER_AES_192_GCM:
     #ifdef MBEDTLS_CCM_C
         case MBEDTLS_CIPHER_AES_192_CCM:
+        case MBEDTLS_CIPHER_AES_192_CCM_STAR_NO_TAG:
     #endif
             return CALG_AES_192;
 
@@ -441,8 +482,11 @@ static ALG_ID schannel_get_cipher_algid(int ciphersuite_id)
         case MBEDTLS_CIPHER_AES_256_CFB128:
         case MBEDTLS_CIPHER_AES_256_CTR:
         case MBEDTLS_CIPHER_AES_256_GCM:
+        case MBEDTLS_CIPHER_CHACHA20:
+        case MBEDTLS_CIPHER_CHACHA20_POLY1305:
     #ifdef MBEDTLS_CCM_C
         case MBEDTLS_CIPHER_AES_256_CCM:
+        case MBEDTLS_CIPHER_AES_256_CCM_STAR_NO_TAG:
     #endif
             return CALG_AES_256;
 #endif
@@ -621,7 +665,7 @@ SECURITY_STATUS schan_imp_recv(schan_imp_session session, void *buffer,
     int ret;
 
     TRACE("MBEDTLS schan_imp_recv: (%p, %p, %p/%lu)\n", s, buffer, length, *length);
-
+try_again:
     ret = mbedtls_ssl_read(&s->ssl, (unsigned char *)buffer, *length);
 
     TRACE("MBEDTLS schan_imp_recv: (%p, %p, %p/%lu) ret= %#x\n", s, buffer, length, *length, ret);
@@ -638,20 +682,31 @@ SECURITY_STATUS schan_imp_recv(schan_imp_session session, void *buffer,
 
         if (!*length)
         {
-            TRACE("MBEDTLS schan_imp_recv: ret=MBEDTLS_ERR_NET_WANT_WRITE -> SEC_I_CONTINUE_NEEDED; len=%lu", *length);
+            TRACE("MBEDTLS schan_imp_recv: ret=MBEDTLS_ERR_NET_WANT_READ -> SEC_I_CONTINUE_NEEDED; len=%lu", *length);
             return SEC_I_CONTINUE_NEEDED;
         }
         else
         {
-            TRACE("MBEDTLS schan_imp_recv: ret=MBEDTLS_ERR_NET_WANT_WRITE -> SEC_E_OK; len=%lu", *length);
+            TRACE("MBEDTLS schan_imp_recv: ret=MBEDTLS_ERR_NET_WANT_READ -> SEC_E_OK; len=%lu", *length);
             return SEC_E_OK;
         }
+    }
+    else if (ret == MBEDTLS_ERR_SSL_WANT_READ)
+    {
+        TRACE("MBEDTLS schan_imp_recv: ret=MBEDTLS_ERR_SSL_WANT_READ -> SEC_I_CONTINUE_NEEDED; len=%lu", *length);
+        goto try_again;
     }
     else if (ret == MBEDTLS_ERR_SSL_PEER_CLOSE_NOTIFY)
     {
         *length = 0;
         TRACE("MBEDTLS schan_imp_recv: ret == MBEDTLS_ERR_SSL_PEER_CLOSE_NOTIFY -> SEC_E_OK\n");
         return SEC_E_OK;
+    }
+    else if (ret == MBEDTLS_ERR_SSL_RECEIVED_NEW_SESSION_TICKET)
+    {
+        *length = 0;
+        TRACE("MBEDTLS schan_imp_recv: ret == MBEDTLS_ERR_SSL_RECEIVED_NEW_SESSION_TICKET -> SEC_E_OK\n");
+        goto try_again;
     }
     else
     {

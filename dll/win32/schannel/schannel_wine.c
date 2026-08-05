@@ -170,7 +170,8 @@ static void read_config(void)
         {{'S','S','L',' ','3','.','0',0}, SP_PROT_SSL3_CLIENT, TRUE, FALSE},
         {{'T','L','S',' ','1','.','0',0}, SP_PROT_TLS1_0_CLIENT, TRUE, FALSE},
         {{'T','L','S',' ','1','.','1',0}, SP_PROT_TLS1_1_CLIENT, TRUE, FALSE /* NOTE: not enabled by default on Windows */ },
-        {{'T','L','S',' ','1','.','2',0}, SP_PROT_TLS1_2_CLIENT, TRUE, FALSE /* NOTE: not enabled by default on Windows */ }
+        {{'T','L','S',' ','1','.','2',0}, SP_PROT_TLS1_2_CLIENT, TRUE, FALSE /* NOTE: not enabled by default on Windows */ },
+        {{'T','L','S',' ','1','.','3',0}, SP_PROT_TLS1_3_CLIENT, TRUE, FALSE /* NOTE: not enabled by default on Windows */ }
     };
 
     /* No need for thread safety */
@@ -284,7 +285,7 @@ static SECURITY_STATUS schan_QueryCredentialsAttributes(
     return ret;
 }
 
-static SECURITY_STATUS SEC_ENTRY schan_QueryCredentialsAttributesA(
+SECURITY_STATUS SEC_ENTRY schan_QueryCredentialsAttributesA(
  PCredHandle phCredential, ULONG ulAttribute, PVOID pBuffer)
 {
     SECURITY_STATUS ret;
@@ -787,6 +788,15 @@ SECURITY_STATUS SEC_ENTRY schan_InitializeSecurityContextW(
     dump_buffer_desc(pInput);
     dump_buffer_desc(pOutput);
 
+    if (pOutput)
+    {
+        for (int i = 0; i < pOutput->cBuffers; ++i)
+        {
+            SecBuffer *b = &pOutput->pBuffers[i];
+            if (b->pvBuffer && (ULONG_PTR)b->pvBuffer % 4 != 0) b->pvBuffer = NULL;
+        }
+    }
+
     if (!phContext)
     {
         ULONG_PTR handle;
@@ -833,7 +843,7 @@ SECURITY_STATUS SEC_ENTRY schan_InitializeSecurityContextW(
             }
         }
         phNewContext->dwLower = handle;
-        phNewContext->dwUpper = 0;
+        phNewContext->dwUpper = 1;
     }
     else
     {

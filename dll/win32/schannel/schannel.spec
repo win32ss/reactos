@@ -19,6 +19,8 @@
 @ stub OpenSslPerformanceData
 @ stdcall QueryContextAttributesA(ptr long ptr) schan_QueryContextAttributesA
 @ stdcall QueryContextAttributesW(ptr long ptr) schan_QueryContextAttributesW
+@ stdcall QueryCredentialsAttributesA(ptr long ptr) schan_QueryCredentialsAttributesA
+@ stdcall QueryCredentialsAttributesW(ptr long ptr) schan_QueryCredentialsAttributesW
 @ stdcall QuerySecurityPackageInfoA(str ptr) secur32.QuerySecurityPackageInfoA
 @ stdcall QuerySecurityPackageInfoW(wstr ptr) secur32.QuerySecurityPackageInfoW
 @ stdcall RevertSecurityContext(ptr) secur32.RevertSecurityContext
