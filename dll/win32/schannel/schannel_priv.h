@@ -156,10 +156,10 @@ extern void schan_imp_free_certificate_credentials(schan_credentials*) DECLSPEC_
 extern DWORD schan_imp_enabled_protocols(void) DECLSPEC_HIDDEN;
 extern BOOL schan_imp_init(void) DECLSPEC_HIDDEN;
 extern void schan_imp_deinit(void) DECLSPEC_HIDDEN;
-
 extern void schan_send_alert_message(schan_imp_session session,
                                    unsigned char level,
                                    unsigned char message) DECLSPEC_HIDDEN;
+extern void schan_set_tls13_available(BOOL istls13available) DECLSPEC_HIDDEN;
 
 SECURITY_STATUS
 WINAPI

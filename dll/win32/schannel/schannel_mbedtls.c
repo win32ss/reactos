@@ -83,6 +83,8 @@ typedef struct
 const mbedtls_cipher_info_t *mbedtls_cipher_info_from_type(const mbedtls_cipher_type_t cipher_type);
 size_t mbedtls_ssl_get_input_max_frag_len(const mbedtls_ssl_context *ssl);
 
+BOOL is_tls13_available = FALSE;
+
 /* custom `net_recv` callback adapter, mbedTLS uses it in mbedtls_ssl_read for
    pulling data from the underlying win32 net stack */
 static int schan_pull_adapter(void *session, unsigned char *buff, size_t buff_len)
@@ -194,6 +196,11 @@ static void schan_imp_debug(void *ctx, int level, const char *file, int line, co
     WARN("MBEDTLS schan_imp_debug: %s:%04d: %s\n", file, line, str);
 }
 
+void schan_set_tls13_available(BOOL istls13available)
+{
+    is_tls13_available = istls13available;
+}
+
 BOOL schan_imp_create_session(schan_imp_session *session, schan_credentials *cred)
 {
     MBEDTLS_SESSION *s = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(MBEDTLS_SESSION));
@@ -250,6 +257,9 @@ BOOL schan_imp_create_session(schan_imp_session *session, schan_credentials *cre
         mbedtls_ssl_conf_min_tls_version(&s->conf, MBEDTLS_SSL_VERSION_TLS1_2);
         mbedtls_ssl_conf_max_tls_version(&s->conf, MBEDTLS_SSL_VERSION_TLS1_3);
     }
+
+    if (!is_tls13_available)
+        mbedtls_ssl_conf_max_tls_version(&s->conf, MBEDTLS_SSL_VERSION_TLS1_2);
 
     WARN("MBEDTLS PK init\n");
     mbedtls_pk_init(&s->pkctx);

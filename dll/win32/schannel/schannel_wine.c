@@ -410,6 +410,9 @@ static SECURITY_STATUS schan_AcquireClientCredentials(const SCHANNEL_CRED *schan
         return SEC_E_NO_AUTHENTICATING_AUTHORITY;
     }
 
+    if (enabled_protocols & SP_PROT_TLS1_3_CLIENT)
+        schan_set_tls13_available(TRUE);
+
     /* For now, the only thing I'm interested in is the direction of the
      * connection, so just store it.
      */
