@@ -9,12 +9,6 @@ SECURITY_STATUS WINAPI schan_AcceptSecurityContext(
     return SEC_E_UNSUPPORTED_FUNCTION;
 }
 
-SECURITY_STATUS WINAPI schan_ApplyControlToken(PCtxtHandle phContext,
- PSecBufferDesc pInput)
-{
-    return SEC_E_UNSUPPORTED_FUNCTION;
-}
-
 SECURITY_STATUS WINAPI schan_CompleteAuthToken(PCtxtHandle phContext,
  PSecBufferDesc pToken)
 {

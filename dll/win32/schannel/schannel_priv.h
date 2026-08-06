@@ -36,6 +36,50 @@ typedef struct _SecurePackage
     SecureProvider *provider;
 } SecurePackage;
 
+typedef enum control_token_enum
+{
+    CONTROL_TOKEN_NONE,
+    CONTROL_TOKEN_SHUTDOWN,
+    CONTROL_TOKEN_ALERT,
+};
+
+typedef struct _SCHANNEL_ALERT_TOKEN
+{
+    DWORD dwTokenType;
+    DWORD dwAlertType;
+    DWORD dwAlertNumber;
+} SCHANNEL_ALERT_TOKEN;
+
+#define TLS1_ALERT_WARNING  1
+#define TLS1_ALERT_FATAL    2
+
+#define TLS1_ALERT_CLOSE_NOTIFY         0
+#define TLS1_ALERT_UNEXPECTED_MESSAGE   10
+#define TLS1_ALERT_BAD_RECORD_MAC       20
+#define TLS1_ALERT_DECRYPTION_FAILED    21
+#define TLS1_ALERT_RECORD_OVERFLOW      22
+#define TLS1_ALERT_DECOMPRESSION_FAIL   30
+#define TLS1_ALERT_HANDSHAKE_FAILURE    40
+#define TLS1_ALERT_BAD_CERTIFICATE      42
+#define TLS1_ALERT_UNSUPPORTED_CERT     43
+#define TLS1_ALERT_CERTIFICATE_REVOKED  44
+#define TLS1_ALERT_CERTIFICATE_EXPIRED  45
+#define TLS1_ALERT_CERTIFICATE_UNKNOWN  46
+#define TLS1_ALERT_ILLEGAL_PARAMETER    47
+#define TLS1_ALERT_UNKNOWN_CA           48
+#define TLS1_ALERT_ACCESS_DENIED        49
+#define TLS1_ALERT_DECODE_ERROR         50
+#define TLS1_ALERT_DECRYPT_ERROR        51
+#define TLS1_ALERT_EXPORT_RESTRICTION   60
+#define TLS1_ALERT_PROTOCOL_VERSION     70
+#define TLS1_ALERT_INSUFFIENT_SECURITY  71
+#define TLS1_ALERT_INTERNAL_ERROR       80
+#define TLS1_ALERT_USER_CANCELED        90
+#define TLS1_ALERT_NO_RENEGOTIATION     100
+#define TLS1_ALERT_UNSUPPORTED_EXT      110
+#define TLS1_ALERT_UNKNOWN_PSK_IDENTITY 115
+#define TLS1_ALERT_NO_APP_PROTOCOL      120
+
 /* Allocates space for and initializes a new provider.  If fnTableA or fnTableW
  * is non-NULL, assumes the provider is built-in, and if moduleName is non-NULL,
  * means must load the LSA/user mode functions tables from external SSP/AP module.
@@ -112,6 +156,10 @@ extern void schan_imp_free_certificate_credentials(schan_credentials*) DECLSPEC_
 extern DWORD schan_imp_enabled_protocols(void) DECLSPEC_HIDDEN;
 extern BOOL schan_imp_init(void) DECLSPEC_HIDDEN;
 extern void schan_imp_deinit(void) DECLSPEC_HIDDEN;
+
+extern void schan_send_alert_message(schan_imp_session session,
+                                   unsigned char level,
+                                   unsigned char message) DECLSPEC_HIDDEN;
 
 SECURITY_STATUS
 WINAPI

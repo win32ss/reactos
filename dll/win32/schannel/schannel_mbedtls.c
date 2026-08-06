@@ -294,6 +294,14 @@ void schan_imp_set_session_transport(schan_imp_session session,
     s->transport = t;
 }
 
+void schan_send_alert_message(schan_imp_session session,
+                                   unsigned char level,
+                                   unsigned char message)
+{
+    MBEDTLS_SESSION *s = (MBEDTLS_SESSION *)session;
+    mbedtls_ssl_send_alert_message(&s->ssl, level, message);
+}
+
 void schan_imp_set_session_target(schan_imp_session session, const char *target)
 {
     MBEDTLS_SESSION *s = (MBEDTLS_SESSION *)session;

@@ -45,6 +45,9 @@ struct schan_context
 {
     schan_imp_session session;
     ULONG req_ctx_attr;
+    unsigned int control_token;
+    unsigned int alert_type;
+    unsigned int alert_number;
     const CERT_CONTEXT *cert;
 };
 
@@ -815,6 +818,7 @@ SECURITY_STATUS SEC_ENTRY schan_InitializeSecurityContextW(
         ctx = HeapAlloc(GetProcessHeap(), 0, sizeof(*ctx));
         if (!ctx) return SEC_E_INSUFFICIENT_MEMORY;
 
+        ctx->control_token = CONTROL_TOKEN_NONE;
         ctx->cert = NULL;
         handle = schan_alloc_handle(ctx, SCHAN_HANDLE_CTX);
         if (handle == SCHAN_INVALID_HANDLE)
@@ -884,6 +888,10 @@ SECURITY_STATUS SEC_ENTRY schan_InitializeSecurityContextW(
         TRACE("Using expected_size %lu.\n", expected_size);
 
         ctx = schan_get_object(phContext->dwLower, SCHAN_HANDLE_CTX);
+        if (ctx->control_token)
+        {
+            schan_send_alert_message(ctx->session, ctx->alert_type, ctx->alert_number);
+        }
     }
 
     ctx->req_ctx_attr = fContextReq;
@@ -1323,6 +1331,48 @@ SECURITY_STATUS SEC_ENTRY schan_DeleteSecurityContext(PCtxtHandle context_handle
     return SEC_E_OK;
 }
 
+SECURITY_STATUS SEC_ENTRY schan_ApplyControlToken(PCtxtHandle context_handle, PSecBufferDesc input)
+{
+    struct schan_context *ctx;
+    DWORD type;
+
+    TRACE("%p %p\n", context_handle, input);
+
+    dump_buffer_desc(input);
+
+    if (!context_handle || !(ctx = schan_get_object(context_handle->dwLower, SCHAN_HANDLE_CTX)))
+        return SEC_E_INVALID_HANDLE;
+    if (!input) return SEC_E_INTERNAL_ERROR;
+
+    if (input->cBuffers != 1) return SEC_E_INVALID_TOKEN;
+    if (input->pBuffers[0].BufferType != SECBUFFER_TOKEN) return SEC_E_INVALID_TOKEN;
+    if (input->pBuffers[0].cbBuffer < sizeof(type)) return SEC_E_UNSUPPORTED_FUNCTION;
+    type = *(DWORD *)input->pBuffers[0].pvBuffer;
+
+    switch (type)
+    {
+    case SCHANNEL_SHUTDOWN:
+        ctx->control_token = CONTROL_TOKEN_SHUTDOWN;
+        ctx->alert_type = TLS1_ALERT_WARNING;
+        ctx->alert_number = TLS1_ALERT_CLOSE_NOTIFY;
+        return SEC_E_OK;
+
+    case SCHANNEL_ALERT:
+    {
+        SCHANNEL_ALERT_TOKEN *alert = input->pBuffers[0].pvBuffer;
+        if (input->pBuffers[0].cbBuffer < sizeof(*alert)) return SEC_E_INVALID_TOKEN;
+        ctx->control_token = CONTROL_TOKEN_ALERT;
+        ctx->alert_type = alert->dwAlertType;
+        ctx->alert_number = alert->dwAlertNumber;
+        return SEC_E_OK;
+    }
+
+    default:
+        FIXME("token type %lu not supported\n", type);
+        return SEC_E_UNSUPPORTED_FUNCTION;
+    }
+}
+
 SecurityFunctionTableA schanTableA = {
     1,
     schan_EnumerateSecurityPackagesA,
@@ -1334,7 +1384,7 @@ SecurityFunctionTableA schanTableA = {
     NULL, /* AcceptSecurityContext */
     NULL, /* CompleteAuthToken */
     schan_DeleteSecurityContext,
-    NULL, /* ApplyControlToken */
+    schan_ApplyControlToken, /* ApplyControlToken */
     schan_QueryContextAttributesA,
     NULL, /* ImpersonateSecurityContext */
     NULL, /* RevertSecurityContext */
@@ -1365,7 +1415,7 @@ SecurityFunctionTableW schanTableW = {
     NULL, /* AcceptSecurityContext */
     NULL, /* CompleteAuthToken */
     schan_DeleteSecurityContext,
-    NULL, /* ApplyControlToken */
+    schan_ApplyControlToken, /* ApplyControlToken */
     schan_QueryContextAttributesW,
     NULL, /* ImpersonateSecurityContext */
     NULL, /* RevertSecurityContext */
