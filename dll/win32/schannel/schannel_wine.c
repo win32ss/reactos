@@ -405,6 +405,9 @@ static SECURITY_STATUS schan_AcquireClientCredentials(const SCHANNEL_CRED *schan
             return st;
 
         st = SEC_E_OK;
+        
+        if (schanCred->grbitEnabledProtocols & SP_PROT_TLS1_X_SERVER)
+            return SEC_E_ALGORITHM_MISMATCH;
     }
 
     read_config();
@@ -464,6 +467,9 @@ static SECURITY_STATUS schan_AcquireServerCredentials(const SCHANNEL_CRED *schan
     TRACE("schanCred %p, phCredential %p, ptsExpiry %p\n", schanCred, phCredential, ptsExpiry);
 
     if (!schanCred) return SEC_E_NO_CREDENTIALS;
+
+    if (schanCred->grbitEnabledProtocols & SP_PROT_TLS1_X_CLIENT)
+        return SEC_E_ALGORITHM_MISMATCH;
 
     st = schan_CheckCreds(schanCred);
     if (st == SEC_E_OK)
