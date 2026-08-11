@@ -266,7 +266,7 @@ static SECURITY_STATUS schan_QueryCredentialsAttributes(
             /* FIXME: get from CryptoAPI */
             FIXME("SECPKG_ATTR_CIPHER_STRENGTHS: semi-stub\n");
             r->dwMinimumCipherStrength = 40;
-            r->dwMaximumCipherStrength = 168;
+            r->dwMaximumCipherStrength = 256;
             ret = SEC_E_OK;
         }
         else
@@ -276,7 +276,7 @@ static SECURITY_STATUS schan_QueryCredentialsAttributes(
         if(pBuffer) {
             /* Regardless of MSDN documentation, tests show that this attribute takes into account
              * what protocols are enabled for given credential. */
-            ((SecPkgCred_SupportedProtocols*)pBuffer)->grbitProtocol = cred->enabled_protocols;
+            ((SecPkgCred_SupportedProtocols*)pBuffer)->grbitProtocol = cred->enabled_protocols | SP_PROT_TLS1_CLIENT;
             ret = SEC_E_OK;
         }else {
             ret = SEC_E_INTERNAL_ERROR;
@@ -381,6 +381,13 @@ static SECURITY_STATUS schan_CheckCreds(const SCHANNEL_CRED *schanCred)
     return st;
 }
 
+#define SP_PROT_DTLS1_2_SERVER 0x00040000
+#define SP_PROT_DTLS1_2_CLIENT 0x00080000
+#define SP_PROT_DTLS_SERVER    0x00010000
+#define SP_PROT_DTLS_CLIENT    0x00020000
+#define SP_PROT_DTLS1_0_SERVER SP_PROT_DTLS_SERVER
+#define SP_PROT_DTLS1_0_CLIENT SP_PROT_DTLS_CLIENT
+
 static SECURITY_STATUS schan_AcquireClientCredentials(const SCHANNEL_CRED *schanCred,
  PCredHandle phCredential, PTimeStamp ptsExpiry)
 {
@@ -407,6 +414,8 @@ static SECURITY_STATUS schan_AcquireClientCredentials(const SCHANNEL_CRED *schan
         enabled_protocols = config_enabled_protocols & ~config_default_disabled_protocols;
     if(!enabled_protocols) {
         ERR("Could not find matching protocol\n");
+        if (schanCred->grbitEnabledProtocols & SP_PROT_DTLS_CLIENT)
+            return SEC_E_ALGORITHM_MISMATCH;
         return SEC_E_NO_AUTHENTICATING_AUTHORITY;
     }
 
@@ -1025,7 +1034,10 @@ SECURITY_STATUS SEC_ENTRY schan_QueryContextAttributesW(
             SecPkgContext_ConnectionInfo *info = buffer;
             return schan_imp_get_connection_info(ctx->session, info);
         }
-
+        case SECPKG_ATTR_SSL_CIPHER_SUITE:
+        {
+            return SEC_E_OK;
+        }
         default:
             FIXME("Unhandled attribute %#x\n", attribute);
             return SEC_E_UNSUPPORTED_FUNCTION;
@@ -1046,7 +1058,8 @@ SECURITY_STATUS SEC_ENTRY schan_QueryContextAttributesA(
             return schan_QueryContextAttributesW(context_handle, attribute, buffer);
         case SECPKG_ATTR_CONNECTION_INFO:
             return schan_QueryContextAttributesW(context_handle, attribute, buffer);
-
+        case SECPKG_ATTR_SSL_CIPHER_SUITE:
+            return schan_QueryContextAttributesW(context_handle, attribute, buffer);
         default:
             FIXME("Unhandled attribute %#x\n", attribute);
             return SEC_E_UNSUPPORTED_FUNCTION;

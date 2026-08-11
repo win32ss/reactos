@@ -41,7 +41,7 @@ typedef enum control_token_enum
     CONTROL_TOKEN_NONE,
     CONTROL_TOKEN_SHUTDOWN,
     CONTROL_TOKEN_ALERT,
-};
+}control_token_enum;
 
 typedef struct _SCHANNEL_ALERT_TOKEN
 {

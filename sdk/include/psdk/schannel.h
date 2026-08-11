@@ -78,6 +78,7 @@ extern "C" {
 #define SECPKG_ATTR_MAPPED_CRED_ATTR    0x5c
 #define SECPKG_ATTR_SESSION_INFO        0x5d
 #define SECPKG_ATTR_APP_DATA            0x5e
+#define SECPKG_ATTR_SSL_CIPHER_SUITE    0x64
 
 #define UNISP_RPC_ID 14
 
@@ -100,6 +101,27 @@ typedef struct _SCHANNEL_CRED
     DWORD dwFlags;
     DWORD dwCredFormat;
 } SCHANNEL_CRED, *PSCHANNEL_CRED;
+
+#define NCRYPT_SSL_MAX_NAME_SIZE            64
+
+
+typedef struct _NCRYPT_SSL_CIPHER_SUITE
+{
+    DWORD dwProtocol;
+    DWORD dwCipherSuite;
+    DWORD dwBaseCipherSuite;
+    WCHAR szCipherSuite[NCRYPT_SSL_MAX_NAME_SIZE];
+    WCHAR szCipher[NCRYPT_SSL_MAX_NAME_SIZE];
+    DWORD dwCipherLen;
+    DWORD dwCipherBlockLen;    // in bytes
+    WCHAR szHash[NCRYPT_SSL_MAX_NAME_SIZE];
+    DWORD dwHashLen;
+    WCHAR szExchange[NCRYPT_SSL_MAX_NAME_SIZE];
+    DWORD dwMinExchangeLen;
+    DWORD dwMaxExchangeLen;
+    WCHAR szCertificate[NCRYPT_SSL_MAX_NAME_SIZE];
+    DWORD dwKeyType;
+} NCRYPT_SSL_CIPHER_SUITE;
 
 typedef struct _SecPkgCred_SupportedAlgs
 {
