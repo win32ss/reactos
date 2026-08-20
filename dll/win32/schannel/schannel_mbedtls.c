@@ -203,6 +203,10 @@ void schan_set_tls13_available(BOOL istls13available)
 
 BOOL schan_imp_create_session(schan_imp_session *session, schan_credentials *cred)
 {
+    CHAR cafile [MAX_PATH];
+    HKEY hKey;
+    ULONG bufferSize;
+    ULONG valueType;
     MBEDTLS_SESSION *s = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(MBEDTLS_SESSION));
 
     WARN("MBEDTLS schan_imp_create_session: %p %p %p\n", session, *session, cred);
@@ -238,8 +242,25 @@ BOOL schan_imp_create_session(schan_imp_session *session, schan_credentials *cre
     mbedtls_ssl_conf_endpoint(&s->conf,   (cred->credential_use & SECPKG_CRED_INBOUND) ? MBEDTLS_SSL_IS_SERVER :
                                                                                          MBEDTLS_SSL_IS_CLIENT);
 
-    const char *cafile = "trusted-ca-list.pem";
-
+    {
+        LSTATUS Status = RegOpenKeyExA(HKEY_LOCAL_MACHINE,
+                                       "Software\\CustomSchannel",
+                                       0,
+                                       KEY_READ,
+                                       &hKey);
+        if (Status == ERROR_SUCCESS)
+        {
+            bufferSize = sizeof(cafile);
+            RegQueryValueExA(hKey,
+                             "CertPath",
+                             NULL,
+                             &valueType,
+                             (LPBYTE)cafile,
+                             &bufferSize
+                             );
+            RegCloseKey(hKey);
+        }
+    }
     mbedtls_x509_crt_init(&s->cacert);
 
     if(mbedtls_x509_crt_parse_file(&s->cacert, cafile) != 0 )

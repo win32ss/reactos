@@ -40,6 +40,7 @@ extern "C" {
 #define SP_PROT_TLS1_0_SERVER SP_PROT_TLS1_SERVER
 #define SP_PROT_TLS1_1_SERVER 256
 #define SP_PROT_TLS1_2_SERVER 1024
+#define SP_PROT_TLS1_3_SERVER 4096
 
 #define SP_PROT_PCT1_CLIENT 2
 #define SP_PROT_PCT1_SERVER 1
@@ -50,6 +51,15 @@ extern "C" {
 #define SP_PROT_PCT1 (SP_PROT_PCT1_CLIENT | SP_PROT_PCT1_SERVER)
 
 #define SP_PROT_TLS1_1PLUS_CLIENT (SP_PROT_TLS1_1_CLIENT | SP_PROT_TLS1_2_CLIENT)
+
+#define SP_PROT_TLS1_X_CLIENT      ( SP_PROT_TLS1_0_CLIENT \
+                                   | SP_PROT_TLS1_1_CLIENT \
+                                   | SP_PROT_TLS1_2_CLIENT \
+                                   | SP_PROT_TLS1_3_CLIENT )
+#define SP_PROT_TLS1_X_SERVER      ( SP_PROT_TLS1_0_SERVER \
+                                   | SP_PROT_TLS1_1_SERVER \
+                                   | SP_PROT_TLS1_2_SERVER \
+                                   | SP_PROT_TLS1_3_SERVER )
 
 #define SCH_CRED_NO_SYSTEM_MAPPER                    2
 #define SCH_CRED_NO_SERVERNAME_CHECK                 4
