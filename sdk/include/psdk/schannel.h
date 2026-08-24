@@ -15,11 +15,12 @@ extern "C" {
 #define SCHANNEL_NAME SCHANNEL_NAME_A
 #endif
 
-#define SCH_CRED_V1           1
-#define SCH_CRED_V2           2
-#define SCH_CRED_VERSION      2
-#define SCH_CRED_V3           3
-#define SCHANNEL_CRED_VERSION 4
+#define SCH_CRED_V1             1
+#define SCH_CRED_V2             2
+#define SCH_CRED_VERSION        2
+#define SCH_CRED_V3             3
+#define SCHANNEL_CRED_VERSION   4
+#define SCH_CREDENTIALS_VERSION 5
 
 #define SCHANNEL_RENEGOTIATE 0
 #define SCHANNEL_SHUTDOWN    1
@@ -73,22 +74,23 @@ extern "C" {
 #define SCH_CRED_IGNORE_NO_REVOCATION_CHECK          2048
 #define SCH_CRED_IGNORE_REVOCATION_OFFLINE           4096
 
-#define SECPKG_ATTR_ISSUER_LIST         0x50
-#define SECPKG_ATTR_REMOTE_CRED         0x51
-#define SECPKG_ATTR_LOCAL_CRED          0x52
-#define SECPKG_ATTR_REMOTE_CERT_CONTEXT 0x53
-#define SECPKG_ATTR_LOCAL_CERT_CONTEXT  0x54
-#define SECPKG_ATTR_ROOT_STORE          0x55
-#define SECPKG_ATTR_SUPPORTED_ALGS      0x56
-#define SECPKG_ATTR_CIPHER_STRENGTHS    0x57
-#define SECPKG_ATTR_SUPPORTED_PROTOCOLS 0x58
-#define SECPKG_ATTR_ISSUER_LIST_EX      0x59
-#define SECPKG_ATTR_CONNECTION_INFO     0x5a
-#define SECPKG_ATTR_EAP_KEY_BLOCK       0x5b
-#define SECPKG_ATTR_MAPPED_CRED_ATTR    0x5c
-#define SECPKG_ATTR_SESSION_INFO        0x5d
-#define SECPKG_ATTR_APP_DATA            0x5e
-#define SECPKG_ATTR_SSL_CIPHER_SUITE    0x64
+#define SECPKG_ATTR_APPLICATION_PROTOCOL 0x23
+#define SECPKG_ATTR_ISSUER_LIST          0x50
+#define SECPKG_ATTR_REMOTE_CRED          0x51
+#define SECPKG_ATTR_LOCAL_CRED           0x52
+#define SECPKG_ATTR_REMOTE_CERT_CONTEXT  0x53
+#define SECPKG_ATTR_LOCAL_CERT_CONTEXT   0x54
+#define SECPKG_ATTR_ROOT_STORE           0x55
+#define SECPKG_ATTR_SUPPORTED_ALGS       0x56
+#define SECPKG_ATTR_CIPHER_STRENGTHS     0x57
+#define SECPKG_ATTR_SUPPORTED_PROTOCOLS  0x58
+#define SECPKG_ATTR_ISSUER_LIST_EX       0x59
+#define SECPKG_ATTR_CONNECTION_INFO      0x5a
+#define SECPKG_ATTR_EAP_KEY_BLOCK        0x5b
+#define SECPKG_ATTR_MAPPED_CRED_ATTR     0x5c
+#define SECPKG_ATTR_SESSION_INFO         0x5d
+#define SECPKG_ATTR_APP_DATA             0x5e
+#define SECPKG_ATTR_SSL_CIPHER_SUITE     0x64
 
 #define UNISP_RPC_ID 14
 
@@ -166,6 +168,71 @@ typedef struct _SecPkgContext_ConnectionInfo
     ALG_ID aiExch;
     DWORD dwExchStrength;
 } SecPkgContext_ConnectionInfo, *PSecPkgContext_ConnectionInfo;
+
+typedef enum _SEC_APPLICATION_PROTOCOL_NEGOTIATION_EXT
+{
+    SecApplicationProtocolNegotiationExt_None,
+    SecApplicationProtocolNegotiationExt_NPN,
+    SecApplicationProtocolNegotiationExt_ALPN
+} SEC_APPLICATION_PROTOCOL_NEGOTIATION_EXT, *PSEC_APPLICATION_PROTOCOL_NEGOTIATION_EXT;
+
+typedef enum _SEC_APPLICATION_PROTOCOL_NEGOTIATION_STATUS
+{
+    SecApplicationProtocolNegotiationStatus_None,
+    SecApplicationProtocolNegotiationStatus_Success,
+    SecApplicationProtocolNegotiationStatus_SelectedClientOnly
+} SEC_APPLICATION_PROTOCOL_NEGOTIATION_STATUS, *PSEC_APPLICATION_PROTOCOL_NEGOTIATION_STATUS;
+
+#define MAX_PROTOCOL_ID_SIZE 0xff
+
+typedef struct _SecPkgContext_ApplicationProtocol {
+  SEC_APPLICATION_PROTOCOL_NEGOTIATION_STATUS ProtoNegoStatus;
+  SEC_APPLICATION_PROTOCOL_NEGOTIATION_EXT    ProtoNegoExt;
+  unsigned char                               ProtocolIdSize;
+  unsigned char                               ProtocolId[MAX_PROTOCOL_ID_SIZE];
+} SecPkgContext_ApplicationProtocol, *PSecPkgContext_ApplicationProtocol;
+
+typedef enum _eTlsAlgorithmUsage {
+  TlsParametersCngAlgUsageKeyExchange,
+  TlsParametersCngAlgUsageSignature,
+  TlsParametersCngAlgUsageCipher,
+  TlsParametersCngAlgUsageDigest,
+  TlsParametersCngAlgUsageCertSig
+} eTlsAlgorithmUsage;
+
+typedef struct _CRYPTO_SETTINGS {
+  eTlsAlgorithmUsage eAlgorithmUsage;
+  UNICODE_STRING strCngAlgId;
+  DWORD cChainingModes;
+  PUNICODE_STRING rgstrChainingModes;
+  DWORD dwMinBitLength;
+  DWORD dwMaxBitLength;
+} CRYPTO_SETTINGS, *PCRYPTO_SETTINGS;
+
+typedef struct _TLS_PARAMETERS {
+  DWORD cAlpnIds;
+  PUNICODE_STRING rgstrAlpnIds;
+  DWORD grbitDisabledProtocols;
+  DWORD cDisabledCrypto;
+  PCRYPTO_SETTINGS pDisabledCrypto;
+  DWORD dwFlags;
+} TLS_PARAMETERS, *PTLS_PARAMETERS;
+
+typedef struct _SCH_CREDENTIALS {
+  DWORD dwVersion;
+  DWORD dwCredFormat;
+  DWORD cCreds;
+  PCCERT_CONTEXT *paCred;
+  HCERTSTORE hRootStore;
+
+  DWORD cMappers;
+  struct _HMAPPER **aphMappers;
+
+  DWORD dwSessionLifespan;
+  DWORD dwFlags;
+  DWORD cTlsParameters;
+  PTLS_PARAMETERS pTlsParameters;
+} SCH_CREDENTIALS, *PSCH_CREDENTIALS;
 
 #ifdef __cplusplus
 }

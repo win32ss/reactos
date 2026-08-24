@@ -77,6 +77,7 @@ typedef struct
     mbedtls_ctr_drbg_context ctr_drbg;
     mbedtls_x509_crt         cacert;
     mbedtls_pk_context       pkctx;
+    const char*              alpn_protocol_name;
     struct schan_transport  *transport;
 } MBEDTLS_SESSION, *PMBEDTLS_SESSION;
 
@@ -304,7 +305,7 @@ void schan_imp_dispose_session(schan_imp_session session)
     WARN("MBEDTLS schan_imp_dispose_session: %p\n", session);
 
     /* tell the other peer (a server) that we are going away */
-    //ssl_close_notify(&s->ssl);
+    mbedtls_ssl_close_notify(&s->ssl);
 
     mbedtls_ssl_free(&s->ssl);
     mbedtls_ctr_drbg_free(&s->ctr_drbg);
@@ -370,6 +371,7 @@ SECURITY_STATUS schan_imp_handshake(schan_imp_session session)
         return SEC_E_INTERNAL_ERROR;
     }
 
+    s->alpn_protocol_name = mbedtls_ssl_get_alpn_protocol(&s->ssl);
     WARN("schan_imp_handshake: Handshake completed!\n");
     WARN("schan_imp_handshake: Protocol is %s, Cipher suite is %s\n", mbedtls_ssl_get_version(&s->ssl),
                                                                       mbedtls_ssl_get_ciphersuite(&s->ssl));
@@ -595,6 +597,27 @@ unsigned int schan_imp_get_session_cipher_block_size(schan_imp_session session)
     TRACE("MBEDTLS schan_imp_get_session_cipher_block_size %p returning %u.\n", session, cipher_block_size);
 
     return cipher_block_size;*/
+}
+
+SECURITY_STATUS schan_imp_get_application_protocol_info(schan_imp_session session,
+                                                        SecPkgContext_ApplicationProtocol *protocol)
+{
+    MBEDTLS_SESSION *s = (MBEDTLS_SESSION *)session;
+    if (!s->alpn_protocol_name)
+    {
+        protocol->ProtoNegoStatus = SecApplicationProtocolNegotiationStatus_None;
+        protocol->ProtoNegoExt = SecApplicationProtocolNegotiationExt_None;
+        protocol->ProtocolIdSize = 0;
+        protocol->ProtocolId[0] = '/0';
+    }
+    else
+    {
+        protocol->ProtoNegoStatus = SecApplicationProtocolNegotiationStatus_Success;
+        protocol->ProtoNegoExt = SecApplicationProtocolNegotiationExt_ALPN;
+        protocol->ProtocolIdSize = strlen(s->alpn_protocol_name);
+        strcpy(protocol->ProtocolId, s->alpn_protocol_name);
+    }
+    return SEC_E_OK;
 }
 
 unsigned int schan_imp_get_max_message_size(schan_imp_session session)

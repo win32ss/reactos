@@ -160,6 +160,8 @@ extern void schan_send_alert_message(schan_imp_session session,
                                    unsigned char level,
                                    unsigned char message) DECLSPEC_HIDDEN;
 extern void schan_set_tls13_available(BOOL istls13available) DECLSPEC_HIDDEN;
+extern SECURITY_STATUS schan_imp_get_application_protocol_info(schan_imp_session session,
+                                                        SecPkgContext_ApplicationProtocol *protocol) DECLSPEC_HIDDEN;
 
 SECURITY_STATUS
 WINAPI

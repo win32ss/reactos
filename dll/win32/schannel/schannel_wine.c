@@ -351,6 +351,7 @@ static SECURITY_STATUS schan_CheckCreds(const SCHANNEL_CRED *schanCred)
     {
     case SCH_CRED_V3:
     case SCHANNEL_CRED_VERSION:
+    case SCH_CREDENTIALS_VERSION:
         break;
     default:
         return SEC_E_INTERNAL_ERROR;
@@ -395,6 +396,8 @@ static SECURITY_STATUS schan_AcquireClientCredentials(const SCHANNEL_CRED *schan
     unsigned enabled_protocols;
     ULONG_PTR handle;
     SECURITY_STATUS st = SEC_E_OK;
+    PSCH_CREDENTIALS Schv5 = (PSCH_CREDENTIALS)schanCred;
+    BOOL IsSchcredv5 = FALSE;
 
     TRACE("schanCred %p, phCredential %p, ptsExpiry %p\n", schanCred, phCredential, ptsExpiry);
 
@@ -403,15 +406,21 @@ static SECURITY_STATUS schan_AcquireClientCredentials(const SCHANNEL_CRED *schan
         st = schan_CheckCreds(schanCred);
         if (st != SEC_E_OK && st != SEC_E_NO_CREDENTIALS)
             return st;
-
+        if (schanCred->dwVersion == SCH_CREDENTIALS_VERSION)
+            IsSchcredv5 = TRUE;
         st = SEC_E_OK;
         
-        if (schanCred->grbitEnabledProtocols & SP_PROT_TLS1_X_SERVER)
+        if (IsSchcredv5 && Schv5->pTlsParameters &&
+            !(Schv5->pTlsParameters->grbitDisabledProtocols & SP_PROT_TLS1_X_SERVER))
+            return SEC_E_ALGORITHM_MISMATCH;
+        else if (schanCred->grbitEnabledProtocols & SP_PROT_TLS1_X_SERVER)
             return SEC_E_ALGORITHM_MISMATCH;
     }
 
     read_config();
-    if(schanCred && schanCred->grbitEnabledProtocols)
+    if (IsSchcredv5 && Schv5->pTlsParameters)
+        enabled_protocols = ~Schv5->pTlsParameters->grbitDisabledProtocols & config_enabled_protocols;
+    else if(schanCred && schanCred->grbitEnabledProtocols)
         enabled_protocols = schanCred->grbitEnabledProtocols & config_enabled_protocols;
     else
         enabled_protocols = config_enabled_protocols & ~config_default_disabled_protocols;
@@ -463,12 +472,20 @@ static SECURITY_STATUS schan_AcquireServerCredentials(const SCHANNEL_CRED *schan
  PCredHandle phCredential, PTimeStamp ptsExpiry)
 {
     SECURITY_STATUS st;
+    PSCH_CREDENTIALS Schv5 = (PSCH_CREDENTIALS)schanCred;
+    BOOL IsSchcredv5 = FALSE;
 
     TRACE("schanCred %p, phCredential %p, ptsExpiry %p\n", schanCred, phCredential, ptsExpiry);
 
     if (!schanCred) return SEC_E_NO_CREDENTIALS;
 
-    if (schanCred->grbitEnabledProtocols & SP_PROT_TLS1_X_CLIENT)
+    if (schanCred->dwVersion == SCH_CREDENTIALS_VERSION)
+        IsSchcredv5 = TRUE;
+
+    if (IsSchcredv5 && Schv5->pTlsParameters &&
+        !(Schv5->pTlsParameters->grbitDisabledProtocols & SP_PROT_TLS1_X_CLIENT))
+        return SEC_E_ALGORITHM_MISMATCH;
+    else if (schanCred->grbitEnabledProtocols & SP_PROT_TLS1_X_CLIENT)
         return SEC_E_ALGORITHM_MISMATCH;
 
     st = schan_CheckCreds(schanCred);
@@ -941,6 +958,16 @@ SECURITY_STATUS SEC_ENTRY schan_InitializeSecurityContextW(
     *pfContextAttr = 0;
     if (ctx->req_ctx_attr & ISC_REQ_ALLOCATE_MEMORY)
         *pfContextAttr |= ISC_RET_ALLOCATED_MEMORY;
+    if (ctx->req_ctx_attr & ISC_REQ_SEQUENCE_DETECT)
+        *pfContextAttr |= ISC_RET_SEQUENCE_DETECT;
+    if (ctx->req_ctx_attr & ISC_REQ_REPLAY_DETECT)
+        *pfContextAttr |= ISC_RET_REPLAY_DETECT;
+    if (ctx->req_ctx_attr & ISC_REQ_CONFIDENTIALITY)
+        *pfContextAttr |= ISC_RET_CONFIDENTIALITY;
+    if (ctx->req_ctx_attr & ISC_REQ_STREAM)
+        *pfContextAttr |= ISC_RET_STREAM;
+    if (ctx->req_ctx_attr & ISC_REQ_USE_SUPPLIED_CREDS)
+        *pfContextAttr |= ISC_RET_USED_SUPPLIED_CREDS;
 
     return ret;
 }
@@ -1044,6 +1071,11 @@ SECURITY_STATUS SEC_ENTRY schan_QueryContextAttributesW(
         {
             return SEC_E_OK;
         }
+        case SECPKG_ATTR_APPLICATION_PROTOCOL:
+        {
+            SecPkgContext_ApplicationProtocol *protocol = buffer;
+            return schan_imp_get_application_protocol_info(ctx->session, protocol);
+        }
         default:
             FIXME("Unhandled attribute %#x\n", attribute);
             return SEC_E_UNSUPPORTED_FUNCTION;
@@ -1065,6 +1097,8 @@ SECURITY_STATUS SEC_ENTRY schan_QueryContextAttributesA(
         case SECPKG_ATTR_CONNECTION_INFO:
             return schan_QueryContextAttributesW(context_handle, attribute, buffer);
         case SECPKG_ATTR_SSL_CIPHER_SUITE:
+            return schan_QueryContextAttributesW(context_handle, attribute, buffer);
+        case SECPKG_ATTR_APPLICATION_PROTOCOL:
             return schan_QueryContextAttributesW(context_handle, attribute, buffer);
         default:
             FIXME("Unhandled attribute %#x\n", attribute);
@@ -1337,6 +1371,7 @@ SECURITY_STATUS SEC_ENTRY schan_DecryptMessage(PCtxtHandle context_handle,
 SECURITY_STATUS SEC_ENTRY schan_DeleteSecurityContext(PCtxtHandle context_handle)
 {
     struct schan_context *ctx;
+    struct schan_transport transport;
 
     TRACE("context_handle %p\n", context_handle);
 
@@ -1344,6 +1379,11 @@ SECURITY_STATUS SEC_ENTRY schan_DeleteSecurityContext(PCtxtHandle context_handle
 
     ctx = schan_free_handle(context_handle->dwLower, SCHAN_HANDLE_CTX);
     if (!ctx) return SEC_E_INVALID_HANDLE;
+
+    transport.ctx = ctx;
+    init_schan_buffers(&transport.in, NULL, NULL);
+    init_schan_buffers(&transport.out, NULL, NULL);
+    schan_imp_set_session_transport(ctx->session, &transport);
 
     if (ctx->cert)
         CertFreeCertificateContext(ctx->cert);
