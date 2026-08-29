@@ -1282,6 +1282,7 @@ SECURITY_STATUS SEC_ENTRY schan_DecryptMessage(PCtxtHandle context_handle,
     SIZE_T data_size;
     char *data;
     unsigned expected_size;
+    unsigned additional_data_needed;
     SSIZE_T received = 0;
     int idx;
     unsigned char *buf_ptr;
@@ -1305,13 +1306,16 @@ SECURITY_STATUS SEC_ENTRY schan_DecryptMessage(PCtxtHandle context_handle,
     {
         TRACE("Expected %u bytes, but buffer only contains %u bytes\n", expected_size, buffer->cbBuffer);
         buffer->BufferType = SECBUFFER_MISSING;
-        buffer->cbBuffer = expected_size - buffer->cbBuffer;
+        additional_data_needed = expected_size - buffer->cbBuffer;
+        buffer->cbBuffer = additional_data_needed;
 
-        /* This is a bit weird, but windows does it too */
+        /* This is a bit weird, but windows does it too. It also insists on having the same value of missing data
+           in both instances of SECBUFFER_EMPTY, or else wininet plus some third-party applications like Discord
+           will end up downloading incomplete files!*/
         idx = schan_find_sec_buffer_idx(message, 0, SECBUFFER_EMPTY);
         buffer = &message->pBuffers[idx];
         buffer->BufferType = SECBUFFER_MISSING;
-        buffer->cbBuffer = expected_size - buffer->cbBuffer;
+        buffer->cbBuffer = additional_data_needed;
 
         TRACE("Returning SEC_E_INCOMPLETE_MESSAGE\n");
         return SEC_E_INCOMPLETE_MESSAGE;

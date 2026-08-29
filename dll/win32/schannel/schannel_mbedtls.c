@@ -589,14 +589,30 @@ static ALG_ID schannel_get_kx_algid(int ciphersuite_id)
 
 unsigned int schan_imp_get_session_cipher_block_size(schan_imp_session session)
 {
-    return 32;
-    /*MBEDTLS_SESSION *s = (MBEDTLS_SESSION *)session;
+    MBEDTLS_SESSION *s = (MBEDTLS_SESSION *)session;
 
-    unsigned int cipher_block_size = mbedtls_cipher_get_block_size(&s->ssl.transform->cipher_ctx_enc);
+    int ciphersuite_id = mbedtls_ssl_get_ciphersuite_id(mbedtls_ssl_get_ciphersuite(&s->ssl));
+    /* These are so new that Windows doesn't seem to have an ALG_ID for them yet. */
+    if (ciphersuite_id == MBEDTLS_CIPHER_CHACHA20 || ciphersuite_id == MBEDTLS_CIPHER_CHACHA20_POLY1305)
+        return 64;
 
-    TRACE("MBEDTLS schan_imp_get_session_cipher_block_size %p returning %u.\n", session, cipher_block_size);
+    ALG_ID alg_id = schannel_get_cipher_algid(ciphersuite_id);
 
-    return cipher_block_size;*/
+    switch (alg_id)
+    {
+        case CALG_3DES:
+        case CALG_DES:
+            return 8;
+        case CALG_AES_128:
+        case CALG_AES_256:
+            return 16;
+        case CALG_RC4:
+            return 1;
+        default:
+            FIXME("Unknown or non-cipher cipher %#x, returning 1\n", ciphersuite_id);
+            return 1;
+    }
+
 }
 
 SECURITY_STATUS schan_imp_get_application_protocol_info(schan_imp_session session,
@@ -608,13 +624,13 @@ SECURITY_STATUS schan_imp_get_application_protocol_info(schan_imp_session sessio
         protocol->ProtoNegoStatus = SecApplicationProtocolNegotiationStatus_None;
         protocol->ProtoNegoExt = SecApplicationProtocolNegotiationExt_None;
         protocol->ProtocolIdSize = 0;
-        protocol->ProtocolId[0] = '/0';
+        protocol->ProtocolId[0] = (CHAR)'/0';
     }
     else
     {
         protocol->ProtoNegoStatus = SecApplicationProtocolNegotiationStatus_Success;
         protocol->ProtoNegoExt = SecApplicationProtocolNegotiationExt_ALPN;
-        protocol->ProtocolIdSize = strlen(s->alpn_protocol_name);
+        protocol->ProtocolIdSize = (CHAR)strlen(s->alpn_protocol_name);
         strcpy(protocol->ProtocolId, s->alpn_protocol_name);
     }
     return SEC_E_OK;
@@ -756,7 +772,7 @@ try_again:
     else if (ret == MBEDTLS_ERR_SSL_WANT_READ)
     {
         TRACE("MBEDTLS schan_imp_recv: ret=MBEDTLS_ERR_SSL_WANT_READ -> SEC_I_CONTINUE_NEEDED; len=%lu", *length);
-        goto try_again;
+        return SEC_I_CONTINUE_NEEDED;
     }
     else if (ret == MBEDTLS_ERR_SSL_PEER_CLOSE_NOTIFY)
     {
