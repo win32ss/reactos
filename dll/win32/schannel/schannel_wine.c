@@ -923,10 +923,6 @@ SECURITY_STATUS SEC_ENTRY schan_InitializeSecurityContextW(
         TRACE("Using expected_size %lu.\n", expected_size);
 
         ctx = schan_get_object(phContext->dwLower, SCHAN_HANDLE_CTX);
-        if (ctx->control_token)
-        {
-            schan_send_alert_message(ctx->session, ctx->alert_type, ctx->alert_number);
-        }
     }
 
     ctx->req_ctx_attr = fContextReq;
@@ -936,6 +932,11 @@ SECURITY_STATUS SEC_ENTRY schan_InitializeSecurityContextW(
     transport.in.limit = expected_size;
     init_schan_buffers(&transport.out, pOutput, schan_init_sec_ctx_get_next_output_buffer);
     schan_imp_set_session_transport(ctx->session, &transport);
+
+    if (ctx->control_token)
+    {
+        schan_send_alert_message(ctx->session, ctx->alert_type, ctx->alert_number);
+    }
 
     /* Perform the TLS handshake */
     ret = schan_imp_handshake(ctx->session);
